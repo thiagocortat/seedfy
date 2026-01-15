@@ -1,0 +1,57 @@
+'Log files:
+/Users/thiagocortat/trae/myglory/.home/.npm/_logs/2026-01-09T14_13_26_802Z-debug-0.log
+
+# npm resolution error report
+
+While resolving: corpo-app@1.0.0
+Found: expo-av@13.10.6
+node_modules/expo-av
+  expo-av@"~16.0.8" from the root project
+
+Could not resolve dependency:
+expo-av@"~16.0.8" from the root project
+
+Conflicting peer dependency: react@19.1.0
+node_modules/react
+  peer react@"^19.1.0" from react-native@0.81.5
+  node_modules/react-native
+    react-native@"0.81.5" from the root project
+    peer react-native@"*" from expo-av@16.0.8
+    node_modules/expo-av
+      expo-av@"~16.0.8" from the root project
+    peer react-native@"*" from expo@54.0.31
+    node_modules/expo
+      expo@"^54.0.31" from the root project
+      peer expo@"*" from expo-av@16.0.8
+      node_modules/expo-av
+        expo-av@"~16.0.8" from the root project
+      peer expo@"*" from @expo/dom-webview@0.2.8
+      node_modules/@expo/dom-webview
+        peerOptional @expo/dom-webview@"*" from expo@54.0.31
+      peer expo@"*" from @expo/metro-runtime@6.1.2
+      node_modules/@expo/metro-runtime
+        peerOptional @expo/metro-runtime@"*" from expo@54.0.31
+    peer react-native@"*" from @expo/dom-webview@0.2.8
+    node_modules/@expo/dom-webview
+      peerOptional @expo/dom-webview@"*" from expo@54.0.31
+    peer react-native@"*" from @expo/metro-runtime@6.1.2
+    node_modules/@expo/metro-runtime
+      peerOptional @expo/metro-runtime@"*" from expo@54.0.31
+    peer react-native@"*" from react-native-webview@13.16.0
+    node_modules/react-native-webview
+      peerOptional react-native-webview@"*" from expo@54.0.31
+      node_modules/expo
+        expo@"^54.0.31" from the root project
+        peer expo@"*" from expo-av@16.0.8
+        node_modules/expo-av
+          expo-av@"~16.0.8" from the root project
+        peer expo@"*" from @expo/dom-webview@0.2.8
+        node_modules/@expo/dom-webview
+          peerOptional @expo/dom-webview@"*" from expo@54.0.31
+        peer expo@"*" from @expo/metro-runtime@6.1.2
+        node_modules/@expo/metro-runtime
+          peerOptional @expo/metro-runtime@"*" from expo@54.0.31
+
+Fix the upstream dependency conflict, or retry
+this command with --force or --legacy-peer-deps
+to accept an incorrect (and potentially broken) dependency resolution.

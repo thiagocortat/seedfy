@@ -1,0 +1,153 @@
+0 verbose cli /usr/local/bin/node /usr/local/bin/npm
+1 info using npm@11.6.0
+2 info using node@v22.13.1
+3 silly config load:file:/usr/local/lib/node_modules/npm/npmrc
+4 silly config load:file:/Users/thiagocortat/trae/myglory/.npmrc
+5 silly config load:file:/Users/thiagocortat/.npmrc
+6 silly config load:file:/usr/local/etc/npmrc
+7 verbose title npm install
+8 verbose argv "install" "--cache" "./npm-cache" "--prefer-offline" "--no-audit"
+9 verbose logfile logs-max:10 dir:/Users/thiagocortat/trae/myglory/npm-cache/_logs/2026-01-09T14_14_08_383Z-
+10 verbose logfile /Users/thiagocortat/trae/myglory/npm-cache/_logs/2026-01-09T14_14_08_383Z-debug-0.log
+11 silly logfile done cleaning log files
+12 silly packumentCache heap:4345298944 maxSize:1086324736 maxEntrySize:543162368
+13 silly idealTree buildDeps
+14 silly fetch manifest @react-native-async-storage/async-storage@2.2.0
+15 silly packumentCache full:https://registry.npmjs.org/@react-native-async-storage%2fasync-storage cache-miss
+16 http fetch GET 200 https://registry.npmjs.org/@react-native-async-storage%2fasync-storage 94ms (cache stale)
+17 silly packumentCache full:https://registry.npmjs.org/@react-native-async-storage%2fasync-storage set size:400637 disposed:false
+18 silly fetch manifest react-native@0.81.5
+19 silly packumentCache full:https://registry.npmjs.org/react-native cache-miss
+20 http fetch GET 200 https://registry.npmjs.org/react-native 16ms (cache stale)
+21 silly packumentCache full:https://registry.npmjs.org/react-native set size:14630637 disposed:false
+22 silly fetch manifest @types/react@~19.1.10
+23 silly packumentCache full:https://registry.npmjs.org/@types%2freact cache-miss
+24 http fetch GET 200 https://registry.npmjs.org/@types%2freact 7ms (cache stale)
+25 silly packumentCache full:https://registry.npmjs.org/@types%2freact set size:2541992 disposed:false
+26 silly fetch manifest react@19.1.0
+27 silly packumentCache full:https://registry.npmjs.org/react cache-miss
+28 http fetch GET 200 https://registry.npmjs.org/react 8ms (cache stale)
+29 silly packumentCache full:https://registry.npmjs.org/react set size:6366570 disposed:false
+30 silly fetch manifest expo-av@~16.0.8
+31 silly packumentCache full:https://registry.npmjs.org/expo-av cache-miss
+32 http fetch GET 200 https://registry.npmjs.org/expo-av 3ms (cache stale)
+33 silly packumentCache full:https://registry.npmjs.org/expo-av set size:658951 disposed:false
+34 silly fetch manifest expo@^54.0.31
+35 silly packumentCache full:https://registry.npmjs.org/expo cache-miss
+36 http fetch GET 200 https://registry.npmjs.org/expo 5ms (cache stale)
+37 silly packumentCache full:https://registry.npmjs.org/expo set size:3430889 disposed:false
+38 silly fetch manifest @expo/dom-webview@*
+39 silly packumentCache full:https://registry.npmjs.org/@expo%2fdom-webview cache-miss
+40 http fetch GET 200 https://registry.npmjs.org/@expo%2fdom-webview 2ms (cache stale)
+41 silly packumentCache full:https://registry.npmjs.org/@expo%2fdom-webview set size:286102 disposed:false
+42 silly fetch manifest @expo/metro-runtime@*
+43 silly packumentCache full:https://registry.npmjs.org/@expo%2fmetro-runtime cache-miss
+44 http fetch GET 200 https://registry.npmjs.org/@expo%2fmetro-runtime 2ms (cache stale)
+45 silly packumentCache full:https://registry.npmjs.org/@expo%2fmetro-runtime set size:541625 disposed:false
+46 silly fetch manifest react-dom@*
+47 silly packumentCache full:https://registry.npmjs.org/react-dom cache-miss
+48 http fetch GET 200 https://registry.npmjs.org/react-dom 16ms (cache stale)
+49 silly packumentCache full:https://registry.npmjs.org/react-dom set size:8382055 disposed:false
+50 silly fetch manifest react@^19.2.3
+51 silly packumentCache full:https://registry.npmjs.org/react cache-miss
+52 http fetch GET 200 https://registry.npmjs.org/react 6ms (cache stale)
+53 silly packumentCache full:https://registry.npmjs.org/react set size:6366570 disposed:false
+54 silly fetch manifest react-native-webview@*
+55 silly packumentCache full:https://registry.npmjs.org/react-native-webview cache-miss
+56 http fetch GET 200 https://registry.npmjs.org/react-native-webview 3ms (cache stale)
+57 silly packumentCache full:https://registry.npmjs.org/react-native-webview set size:1350913 disposed:false
+58 silly fetch manifest react-native-web@*
+59 silly packumentCache full:https://registry.npmjs.org/react-native-web cache-miss
+60 http cache https://registry.npmjs.org/react-native-web 2ms (cache hit)
+61 silly packumentCache full:https://registry.npmjs.org/react-native-web set size:1090363 disposed:false
+62 silly fetch manifest expo-constants@~18.0.13
+63 silly packumentCache full:https://registry.npmjs.org/expo-constants cache-miss
+64 http fetch GET 200 https://registry.npmjs.org/expo-constants 3ms (cache stale)
+65 silly packumentCache full:https://registry.npmjs.org/expo-constants set size:853287 disposed:false
+66 silly fetch manifest expo-linking@~8.0.11
+67 silly packumentCache full:https://registry.npmjs.org/expo-linking cache-miss
+68 http fetch GET 200 https://registry.npmjs.org/expo-linking 2ms (cache stale)
+69 silly packumentCache full:https://registry.npmjs.org/expo-linking set size:597670 disposed:false
+70 silly fetch manifest expo-notifications@~0.32.16
+71 silly packumentCache full:https://registry.npmjs.org/expo-notifications cache-miss
+72 http fetch GET 200 https://registry.npmjs.org/expo-notifications 3ms (cache stale)
+73 silly packumentCache full:https://registry.npmjs.org/expo-notifications set size:969733 disposed:false
+74 silly fetch manifest expo-secure-store@~15.0.8
+75 silly packumentCache full:https://registry.npmjs.org/expo-secure-store cache-miss
+76 http fetch GET 200 https://registry.npmjs.org/expo-secure-store 2ms (cache stale)
+77 silly packumentCache full:https://registry.npmjs.org/expo-secure-store set size:577475 disposed:false
+78 silly fetch manifest expo-status-bar@~3.0.9
+79 silly packumentCache full:https://registry.npmjs.org/expo-status-bar cache-miss
+80 http fetch GET 200 https://registry.npmjs.org/expo-status-bar 2ms (cache stale)
+81 silly packumentCache full:https://registry.npmjs.org/expo-status-bar set size:557202 disposed:false
+82 silly fetch manifest react-native-safe-area-context@~5.6.0
+83 silly packumentCache full:https://registry.npmjs.org/react-native-safe-area-context cache-miss
+84 http fetch GET 200 https://registry.npmjs.org/react-native-safe-area-context 2ms (cache stale)
+85 silly packumentCache full:https://registry.npmjs.org/react-native-safe-area-context set size:657519 disposed:false
+86 silly fetch manifest react-native-screens@~4.16.0
+87 silly packumentCache full:https://registry.npmjs.org/react-native-screens cache-miss
+88 http fetch GET 200 https://registry.npmjs.org/react-native-screens 5ms (cache stale)
+89 silly packumentCache full:https://registry.npmjs.org/react-native-screens set size:3049719 disposed:false
+90 silly fetch manifest jest-expo@~54.0.16
+91 silly packumentCache full:https://registry.npmjs.org/jest-expo cache-miss
+92 http fetch GET 200 https://registry.npmjs.org/jest-expo 3ms (cache stale)
+93 silly packumentCache full:https://registry.npmjs.org/jest-expo set size:917557 disposed:false
+94 silly fetch manifest react-server-dom-webpack@~19.0.3 || ~19.1.4 || ~19.2.3
+95 silly packumentCache full:https://registry.npmjs.org/react-server-dom-webpack cache-miss
+96 http cache https://registry.npmjs.org/react-server-dom-webpack 8ms (cache hit)
+97 silly packumentCache full:https://registry.npmjs.org/react-server-dom-webpack set size:6743267 disposed:false
+98 silly fetch manifest webpack@^5.59.0
+99 silly packumentCache full:https://registry.npmjs.org/webpack cache-miss
+100 http cache https://registry.npmjs.org/webpack 6ms (cache hit)
+101 silly packumentCache full:https://registry.npmjs.org/webpack set size:4926367 disposed:false
+102 silly placeDep ROOT @react-native-async-storage/async-storage@2.2.0 REPLACE for: corpo-app@1.0.0 want: 2.2.0
+103 silly placeDep ROOT @types/react@19.1.17 REPLACE for: corpo-app@1.0.0 want: ~19.1.10
+104 verbose stack Error: could not resolve
+104 verbose stack     at PlaceDep.failPeerConflict (/usr/local/lib/node_modules/npm/node_modules/@npmcli/arborist/lib/place-dep.js:503:25)
+104 verbose stack     at new PlaceDep (/usr/local/lib/node_modules/npm/node_modules/@npmcli/arborist/lib/place-dep.js:157:21)
+104 verbose stack     at #buildDepStep (/usr/local/lib/node_modules/npm/node_modules/@npmcli/arborist/lib/arborist/build-ideal-tree.js:933:18)
+104 verbose stack     at async Arborist.buildIdealTree (/usr/local/lib/node_modules/npm/node_modules/@npmcli/arborist/lib/arborist/build-ideal-tree.js:182:7)
+104 verbose stack     at async Promise.all (index 1)
+104 verbose stack     at async Arborist.reify (/usr/local/lib/node_modules/npm/node_modules/@npmcli/arborist/lib/arborist/reify.js:126:5)
+104 verbose stack     at async Install.exec (/usr/local/lib/node_modules/npm/lib/commands/install.js:150:5)
+104 verbose stack     at async Npm.exec (/usr/local/lib/node_modules/npm/lib/npm.js:208:9)
+104 verbose stack     at async module.exports (/usr/local/lib/node_modules/npm/lib/cli/entry.js:67:5)
+105 error code ERESOLVE
+106 error ERESOLVE could not resolve
+107 error
+108 error While resolving: corpo-app@1.0.0
+108 error Found: expo-av@13.10.6[2m[22m
+108 error [2mnode_modules/expo-av[22m
+108 error   expo-av@"~16.0.8" from the root project
+108 error
+108 error Could not resolve dependency:
+108 error expo-av@"~16.0.8" from the root project
+108 error
+108 error Conflicting peer dependency: react@19.1.0[2m[22m
+108 error [2mnode_modules/react[22m
+108 error   [95mpeer[39m react@"^19.1.0" from react-native@0.81.5[2m[22m
+108 error   [2mnode_modules/react-native[22m
+108 error     react-native@"0.81.5" from the root project
+108 error     [95mpeer[39m react-native@"*" from expo-av@16.0.8[2m[22m
+108 error     [2mnode_modules/expo-av[22m
+108 error       expo-av@"~16.0.8" from the root project
+108 error     4 more (expo, @expo/dom-webview, @expo/metro-runtime, react-native-webview)
+108 error
+108 error Fix the upstream dependency conflict, or retry
+108 error this command with --force or --legacy-peer-deps
+108 error to accept an incorrect (and potentially broken) dependency resolution.
+109 error
+109 error
+109 error For a full report see:
+109 error /Users/thiagocortat/trae/myglory/npm-cache/_logs/2026-01-09T14_14_08_383Z-eresolve-report.txt
+110 silly unfinished npm timer reify 1767968048603
+111 silly unfinished npm timer reify:loadTrees 1767968048604
+112 silly unfinished npm timer idealTree:buildDeps 1767968048823
+113 silly unfinished npm timer idealTree:#root 1767968048823
+114 verbose cwd /Users/thiagocortat/trae/myglory
+115 verbose os Darwin 25.1.0
+116 verbose node v22.13.1
+117 verbose npm  v11.6.0
+118 verbose exit 1
+119 verbose code 1
+120 error A complete log of this run can be found in: /Users/thiagocortat/trae/myglory/npm-cache/_logs/2026-01-09T14_14_08_383Z-debug-0.log

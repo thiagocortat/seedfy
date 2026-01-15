@@ -1,0 +1,26 @@
+{
+  "expo": {
+    "name": "Seedfy",
+    "slug": "seedfy",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "automatic",
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.seedfy.app"
+    },
+    "android": {
+      "package": "com.seedfy.app"
+    },
+    "plugins": [
+      "expo-secure-store",
+      "expo-av",
+      "expo-notifications",
+      "expo-font"
+    ],
+    "scheme": "seedfy"
+  }
+}

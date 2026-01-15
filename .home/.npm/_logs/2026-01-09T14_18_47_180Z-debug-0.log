@@ -1,0 +1,26 @@
+0 verbose cli /usr/local/bin/node /usr/local/bin/npm
+1 info using npm@11.6.0
+2 info using node@v22.13.1
+3 silly config load:file:/usr/local/lib/node_modules/npm/npmrc
+4 silly config load:file:/Users/thiagocortat/trae/myglory/.npmrc
+5 silly config load:file:/Users/thiagocortat/trae/myglory/.home/.npmrc
+6 silly config load:file:/usr/local/etc/npmrc
+7 verbose title npm explain @unimodules/core
+8 verbose argv "explain" "@unimodules/core" "--json"
+9 verbose logfile logs-max:10 dir:/Users/thiagocortat/trae/myglory/.home/.npm/_logs/2026-01-09T14_18_47_180Z-
+10 verbose logfile /Users/thiagocortat/trae/myglory/.home/.npm/_logs/2026-01-09T14_18_47_180Z-debug-0.log
+11 silly logfile start cleaning logs, removing 3 files
+12 silly packumentCache heap:4345298944 maxSize:1086324736 maxEntrySize:543162368
+13 silly logfile done cleaning log files
+14 verbose stack Error: No dependencies found matching @unimodules/core
+14 verbose stack     at Explain.exec (/usr/local/lib/node_modules/npm/lib/commands/explain.js:58:13)
+14 verbose stack     at async Npm.exec (/usr/local/lib/node_modules/npm/lib/npm.js:208:9)
+14 verbose stack     at async module.exports (/usr/local/lib/node_modules/npm/lib/cli/entry.js:67:5)
+15 error No dependencies found matching @unimodules/core
+16 verbose cwd /Users/thiagocortat/trae/myglory
+17 verbose os Darwin 25.1.0
+18 verbose node v22.13.1
+19 verbose npm  v11.6.0
+20 verbose exit 1
+21 verbose code 1
+22 error A complete log of this run can be found in: /Users/thiagocortat/trae/myglory/.home/.npm/_logs/2026-01-09T14_18_47_180Z-debug-0.log
