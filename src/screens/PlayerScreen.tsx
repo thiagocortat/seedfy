@@ -8,6 +8,7 @@ import { useTheme } from '../theme';
 import { Ionicons } from '@expo/vector-icons';
 import { ContentItem } from '../services/contentService';
 import Slider from '@react-native-community/slider';
+import { useTranslation } from 'react-i18next';
 
 const { width } = Dimensions.get('window');
 
@@ -16,6 +17,7 @@ export const PlayerScreen = () => {
   const navigation = useNavigation();
   const { item } = route.params as { item: ContentItem };
   const { spacing, colors } = useTheme();
+  const { t } = useTranslation();
 
   const videoRef = useRef<Video>(null);
   const [sound, setSound] = useState<Audio.Sound | null>(null);

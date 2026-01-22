@@ -1,0 +1,107 @@
+{
+  "common": {
+    "error": "Error",
+    "loading": "Cargando...",
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "back": "Atrás",
+    "next": "Siguiente",
+    "finish": "Finalizar",
+    "days": "Días",
+    "viewAll": "Ver Todo",
+    "continue": "Continuar",
+    "start": "Comenzar"
+  },
+  "auth": {
+    "welcomeBack": "Bienvenido de nuevo",
+    "signInSubtitle": "Inicia sesión para continuar tu viaje espiritual",
+    "emailPlaceholder": "Ingresa tu correo",
+    "passwordPlaceholder": "Ingresa tu contraseña",
+    "signIn": "Iniciar Sesión",
+    "createAccount": "Crear Cuenta",
+    "forgotPassword": "¿Olvidaste tu contraseña?",
+    "joinSeedfy": "Únete a Seedfy",
+    "signUpSubtitle": "Comienza tus desafíos espirituales en grupo hoy",
+    "createPassword": "Crea una contraseña",
+    "confirmPassword": "Confirma tu contraseña",
+    "signUp": "Registrarse",
+    "alreadyHaveAccount": "¿Ya tienes una cuenta?",
+    "passwordsDoNotMatch": "Las contraseñas no coinciden",
+    "fillAllFields": "Por favor completa todos los campos",
+    "resetPassword": "Restablecer Contraseña",
+    "resetPasswordSubtitle": "Ingresa tu correo para recibir un enlace de restablecimiento",
+    "sendResetLink": "Enviar Enlace",
+    "resetPasswordEmailSent": "Revisa tu correo para restablecer la contraseña",
+    "success": "Éxito"
+  },
+  "home": {
+    "goodMorning": "Buenos Días",
+    "goodAfternoon": "Buenas Tardes",
+    "goodEvening": "Buenas Noches",
+    "friend": "Amigo",
+    "verseOfTheDay": "Este es el día que hizo el Señor.",
+    "activeChallenges": "Desafíos Activos",
+    "featuredForYou": "Destacado para Ti",
+    "fromYourChurch": "De Tu Iglesia",
+    "startJourney": "Comienza un viaje con tus amigos.",
+    "startChallenge": "Iniciar un Desafío",
+    "noChurchUpdates": "No hay actualizaciones recientes de tu iglesia.",
+    "selectChurch": "Selecciona tu iglesia para ver actualizaciones"
+  },
+  "profile": {
+    "title": "Perfil",
+    "myGroups": "Mis Grupos",
+    "signOut": "Cerrar Sesión",
+    "language": "Idioma",
+    "changeLanguage": "Cambiar Idioma"
+  },
+  "challenges": {
+    "selectType": "Seleccionar Tipo de Desafío",
+    "details": "Detalles del Desafío",
+    "titleOptional": "Título (Opcional)",
+    "placeholderTitle": "ej: Evangelio de Juan",
+    "duration": "Duración (Días)",
+    "selectGroup": "Seleccionar Grupo",
+    "create": "Crear Desafío",
+    "noGroups": "Aún no tienes grupos.",
+    "createGroup": "Crear un Grupo",
+    "selectionRequired": "Selección Requerida",
+    "selectGroupError": "Por favor selecciona un grupo para crear un desafío.",
+    "invite": "Invitar",
+    "inviteMessage": "Únete a mi desafío \"{{title}}\" en Seedfy: {{link}}",
+    "participantsToday": "Participantes completaron hoy",
+    "completed": "Completado",
+    "markCompleted": "Marcar como Completado",
+    "progress": "Progreso",
+    "day": "Día",
+    "greatJob": "¡Buen trabajo!",
+    "dailyGoalCompleted": "Has completado tu meta diaria.",
+    "types": {
+      "reading": "Lectura Bíblica",
+      "meditation": "Meditación",
+      "fasting": "Ayuno",
+      "communion": "Comunión"
+    }
+  },
+  "content": {
+    "library": "Biblioteca",
+    "live": "EN VIVO"
+  },
+  "church": {
+    "noChurchSelected": "Ninguna Iglesia Seleccionada",
+    "connectCommunity": "Conéctate con tu comunidad local para ver actualizaciones, eventos y unirte a desafíos grupales.",
+    "findMyChurch": "Encontrar Mi Iglesia",
+    "give": "Donar",
+    "events": "Eventos",
+    "latestUpdates": "Últimas Actualizaciones",
+    "noUpdates": "No hay actualizaciones recientes.",
+    "changeChurch": "Cambiar Iglesia"
+  },
+  "navigation": {
+    "home": "Inicio",
+    "challenges": "Desafíos",
+    "library": "Biblioteca",
+    "church": "Iglesia",
+    "profile": "Perfil"
+  }
+}

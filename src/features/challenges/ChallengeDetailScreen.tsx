@@ -11,6 +11,7 @@ import { useAuthStore } from '../../store/useAuthStore';
 import { Ionicons } from '@expo/vector-icons';
 import * as Linking from 'expo-linking';
 import { Share } from 'react-native';
+import { useTranslation } from 'react-i18next';
 
 export const ChallengeDetailScreen = () => {
   const { challenges, checkIn, getDailyProgress, getUserCheckIns } = useChallengeStore();
@@ -23,6 +24,7 @@ export const ChallengeDetailScreen = () => {
   const route = useRoute<any>();
   const user = useAuthStore(state => state.user);
   const { challengeId } = route.params;
+  const { t } = useTranslation();
 
   const challenge = challenges.find(c => c.id === challengeId);
 
@@ -47,9 +49,14 @@ export const ChallengeDetailScreen = () => {
     setLoading(true);
     try {
       await checkIn(user.id, challenge.id);
+      
+      // Update local state immediately
+      const todayKey = new Date().toISOString().split('T')[0];
       setIsCheckedIn(true);
       setTodayCount(prev => prev + 1);
-      Alert.alert('Great job!', 'You have completed your daily goal.');
+      setUserCheckIns(prev => [...prev, todayKey]); // <--- Fix: update userCheckIns list
+      
+      Alert.alert(t('challenges.greatJob'), t('challenges.dailyGoalCompleted'));
     } catch (error: any) {
       // Assuming service throws if already checked in, or we can just ignore
       console.log(error);
@@ -61,7 +68,7 @@ export const ChallengeDetailScreen = () => {
   const handleInvite = async () => {
     const link = Linking.createURL(`invite/challenge/${challenge?.id}`);
     await Share.share({
-      message: `Join my challenge "${challenge?.title}" on Seedfy: ${link}`,
+      message: t('challenges.inviteMessage', { title: challenge?.title, link }),
     });
   };
 
@@ -73,10 +80,10 @@ export const ChallengeDetailScreen = () => {
         <View style={{ flex: 1 }}>
           <Typography variant="h1">{challenge.title}</Typography>
           <Typography variant="body" color={colors.textSecondary} style={{ textTransform: 'capitalize' }}>
-            {challenge.type} • {challenge.durationDays} Days
+            {t(`challenges.types.${challenge.type}`, { defaultValue: challenge.type })} • {challenge.durationDays} {t('common.days')}
           </Typography>
         </View>
-        <Button title="Invite" onPress={handleInvite} variant="outline" style={{ minHeight: 36, paddingVertical: 4, paddingHorizontal: 12 }} />
+        <Button title={t('challenges.invite')} onPress={handleInvite} variant="outline" style={{ minHeight: 36, paddingVertical: 4, paddingHorizontal: 12 }} />
       </View>
 
       <Card style={{ padding: spacing.lg, alignItems: 'center', marginBottom: spacing.xl, backgroundColor: colors.surface }}>
@@ -84,7 +91,7 @@ export const ChallengeDetailScreen = () => {
           {todayCount}
         </Typography>
         <Typography variant="body" color={colors.textSecondary}>
-          Participants completed today
+          {t('challenges.participantsToday')}
         </Typography>
         
         <View style={{ width: '100%', height: 1, backgroundColor: colors.border, marginVertical: spacing.lg }} />
@@ -93,12 +100,12 @@ export const ChallengeDetailScreen = () => {
           <View style={{ flexDirection: 'row', alignItems: 'center' }}>
             <Ionicons name="checkmark-circle" size={32} color={colors.success} />
             <Typography variant="h3" style={{ marginLeft: spacing.sm }} color={colors.success}>
-              Completed
+              {t('challenges.completed')}
             </Typography>
           </View>
         ) : (
           <Button
-            title="Mark as Completed"
+            title={t('challenges.markCompleted')}
             onPress={handleCheckIn}
             loading={loading}
             style={{ width: '100%' }}
@@ -106,7 +113,7 @@ export const ChallengeDetailScreen = () => {
         )}
       </Card>
 
-      <Typography variant="h3" style={{ marginBottom: spacing.md }}>Progress</Typography>
+      <Typography variant="h3" style={{ marginBottom: spacing.md }}>{t('challenges.progress')}</Typography>
       <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm }}>
         {Array.from({ length: challenge.durationDays }).map((_, i) => {
            const targetDate = new Date(challenge.startDate);
@@ -127,7 +134,7 @@ export const ChallengeDetailScreen = () => {
                }}>
                  {isCompleted && <Ionicons name="checkmark" size={16} color="white" />}
                </View>
-               <Typography variant="caption" style={{ fontSize: 10 }}>Day {i + 1}</Typography>
+               <Typography variant="caption" style={{ fontSize: 10 }}>{t('challenges.day')} {i + 1}</Typography>
              </View>
            );
         })}

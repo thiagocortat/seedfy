@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, Alert, TouchableOpacity } from 'react-native';
+import { View, Alert, TouchableOpacity, StyleSheet } from 'react-native';
 import { supabase } from '../../services/supabase';
 import { Screen } from '../../components/Screen';
 import { Typography } from '../../components/Typography';
@@ -7,6 +7,7 @@ import { Input } from '../../components/Input';
 import { Button } from '../../components/Button';
 import { useTheme } from '../../theme';
 import { useNavigation } from '@react-navigation/native';
+import { useTranslation } from 'react-i18next';
 
 export const ForgotPasswordScreen = () => {
   const [email, setEmail] = useState('');
@@ -14,24 +15,26 @@ export const ForgotPasswordScreen = () => {
   
   const { spacing, colors } = useTheme();
   const navigation = useNavigation<any>();
+  const { t } = useTranslation();
 
-  const handleReset = async () => {
+  const handleResetPassword = async () => {
     if (!email) {
-      Alert.alert('Error', 'Please enter your email');
+      Alert.alert(t('common.error'), t('auth.fillAllFields'));
       return;
     }
 
     setLoading(true);
 
     try {
-      const { error } = await supabase.auth.resetPasswordForEmail(email);
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: 'myglory://reset-password',
+      });
+
       if (error) throw error;
-      
-      Alert.alert('Success', 'Password reset email sent!', [
-        { text: 'OK', onPress: () => navigation.navigate('SignIn') }
-      ]);
+      Alert.alert(t('auth.success'), t('auth.resetPasswordEmailSent'));
+      navigation.goBack();
     } catch (err: any) {
-      Alert.alert('Error', err.message);
+      Alert.alert(t('common.error'), err.message);
     } finally {
       setLoading(false);
     }
@@ -40,15 +43,15 @@ export const ForgotPasswordScreen = () => {
   return (
     <Screen style={{ padding: spacing.lg, justifyContent: 'center' }}>
       <Typography variant="h1" style={{ marginBottom: spacing.xs }}>
-        Reset Password
+        {t('auth.resetPassword')}
       </Typography>
       <Typography variant="body" color={colors.textSecondary} style={{ marginBottom: spacing.xl }}>
-        Enter your email to receive a reset link
+        {t('auth.resetPasswordSubtitle')}
       </Typography>
 
       <Input
         label="Email"
-        placeholder="Enter your email"
+        placeholder={t('auth.emailPlaceholder')}
         value={email}
         onChangeText={setEmail}
         autoCapitalize="none"
@@ -57,15 +60,15 @@ export const ForgotPasswordScreen = () => {
       />
 
       <Button
-        title="Send Reset Link"
-        onPress={handleReset}
+        title={t('auth.sendResetLink')}
+        onPress={handleResetPassword}
         loading={loading}
         style={{ marginBottom: spacing.lg }}
       />
 
-      <TouchableOpacity onPress={() => navigation.goBack()} style={styles.center}>
+      <TouchableOpacity onPress={() => navigation.goBack()} style={{ alignItems: 'center' }}>
         <Typography variant="body" color={colors.primary}>
-          Back to Sign In
+          {t('common.back')}
         </Typography>
       </TouchableOpacity>
     </Screen>

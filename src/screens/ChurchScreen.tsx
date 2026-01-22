@@ -9,6 +9,7 @@ import { useTheme } from '../theme';
 import { useUserStore } from '../store/useUserStore';
 import { churchService, Church } from '../services/churchService';
 import { Ionicons } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
 
 export const ChurchScreen = () => {
   const { profile } = useUserStore();
@@ -18,6 +19,7 @@ export const ChurchScreen = () => {
   
   const { spacing, colors, layout } = useTheme();
   const navigation = useNavigation<any>();
+  const { t } = useTranslation();
 
   useEffect(() => {
     const loadChurch = async () => {
@@ -50,13 +52,13 @@ export const ChurchScreen = () => {
   const handleGive = () => {
     // In production, use church.giveUrl
     const url = 'https://www.paypal.com/donate'; 
-    Linking.openURL(url).catch(err => Alert.alert('Error', 'Could not open donation page'));
+    Linking.openURL(url).catch(err => Alert.alert(t('common.error'), 'Could not open donation page'));
   };
 
   const handleEvents = () => {
     // In production, use church.eventsUrl
     const url = 'https://calendar.google.com';
-    Linking.openURL(url).catch(err => Alert.alert('Error', 'Could not open events page'));
+    Linking.openURL(url).catch(err => Alert.alert(t('common.error'), 'Could not open events page'));
   };
 
   if (loading) {
@@ -75,15 +77,15 @@ export const ChurchScreen = () => {
         </View>
         
         <Typography variant="h2" align="center" style={{ marginBottom: spacing.sm }}>
-          No Church Selected
+          {t('church.noChurchSelected')}
         </Typography>
         
         <Typography variant="body" align="center" color={colors.textSecondary} style={{ marginBottom: spacing.xl }}>
-          Connect with your local community to see updates, events, and join group challenges.
+          {t('church.connectCommunity')}
         </Typography>
 
         <Button 
-          title="Find My Church" 
+          title={t('church.findMyChurch')} 
           onPress={handleFindChurch}
           style={{ width: '100%' }}
         />
@@ -129,13 +131,13 @@ export const ChurchScreen = () => {
         {/* Quick Actions */}
         <View style={{ flexDirection: 'row', gap: spacing.md, marginBottom: spacing.xl }}>
           <Button 
-            title="Give" 
+            title={t('church.give')} 
             variant="outline" 
             style={{ flex: 1 }} 
             onPress={handleGive}
           />
           <Button 
-            title="Events" 
+            title={t('church.events')} 
             variant="outline" 
             style={{ flex: 1 }}
             onPress={handleEvents}
@@ -144,7 +146,7 @@ export const ChurchScreen = () => {
 
         {/* Feed Section */}
         <View>
-          <Typography variant="h3" style={{ marginBottom: spacing.md }}>Latest Updates</Typography>
+          <Typography variant="h3" style={{ marginBottom: spacing.md }}>{t('church.latestUpdates')}</Typography>
           
           {updates.length > 0 ? updates.map((update, index) => (
             <Card key={update.id || index} style={{ marginBottom: spacing.md }}>
@@ -163,13 +165,13 @@ export const ChurchScreen = () => {
             </Card>
           )) : (
             <Typography variant="body" color={colors.textSecondary} style={{ fontStyle: 'italic' }}>
-               No recent updates.
+               {t('church.noUpdates')}
             </Typography>
           )}
         </View>
 
         <Button 
-          title="Change Church" 
+          title={t('church.changeChurch')} 
           variant="ghost" 
           onPress={handleFindChurch}
           style={{ marginTop: spacing.xl }}

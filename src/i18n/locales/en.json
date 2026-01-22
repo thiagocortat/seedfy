@@ -1,0 +1,107 @@
+{
+  "common": {
+    "error": "Error",
+    "loading": "Loading...",
+    "save": "Save",
+    "cancel": "Cancel",
+    "back": "Back",
+    "next": "Next",
+    "finish": "Finish",
+    "days": "Days",
+    "viewAll": "View All",
+    "continue": "Continue",
+    "start": "Start"
+  },
+  "auth": {
+    "welcomeBack": "Welcome Back",
+    "signInSubtitle": "Sign in to continue your spiritual journey",
+    "emailPlaceholder": "Enter your email",
+    "passwordPlaceholder": "Enter your password",
+    "signIn": "Sign In",
+    "createAccount": "Create Account",
+    "forgotPassword": "Forgot Password?",
+    "joinSeedfy": "Join Seedfy",
+    "signUpSubtitle": "Start your group spiritual challenges today",
+    "createPassword": "Create a password",
+    "confirmPassword": "Confirm your password",
+    "signUp": "Sign Up",
+    "alreadyHaveAccount": "Already have an account?",
+    "passwordsDoNotMatch": "Passwords do not match",
+    "fillAllFields": "Please fill in all fields",
+    "resetPassword": "Reset Password",
+    "resetPasswordSubtitle": "Enter your email to receive a reset link",
+    "sendResetLink": "Send Reset Link",
+    "resetPasswordEmailSent": "Check your email for the password reset link",
+    "success": "Success"
+  },
+  "home": {
+    "goodMorning": "Good Morning",
+    "goodAfternoon": "Good Afternoon",
+    "goodEvening": "Good Evening",
+    "friend": "Friend",
+    "verseOfTheDay": "This is the day that the Lord has made.",
+    "activeChallenges": "Active Challenges",
+    "featuredForYou": "Featured for You",
+    "fromYourChurch": "From Your Church",
+    "startJourney": "Start a journey with your friends.",
+    "startChallenge": "Start a Challenge",
+    "noChurchUpdates": "No recent updates from your church.",
+    "selectChurch": "Select your church to see updates"
+  },
+  "profile": {
+    "title": "Profile",
+    "myGroups": "My Groups",
+    "signOut": "Sign Out",
+    "language": "Language",
+    "changeLanguage": "Change Language"
+  },
+  "challenges": {
+    "selectType": "Select Challenge Type",
+    "details": "Challenge Details",
+    "titleOptional": "Title (Optional)",
+    "placeholderTitle": "e.g. Gospel of John",
+    "duration": "Duration (Days)",
+    "selectGroup": "Select Group",
+    "create": "Create Challenge",
+    "noGroups": "You don't have any groups yet.",
+    "createGroup": "Create a Group",
+    "selectionRequired": "Selection Required",
+    "selectGroupError": "Please select a group to create a challenge.",
+    "invite": "Invite",
+    "inviteMessage": "Join my challenge \"{{title}}\" on Seedfy: {{link}}",
+    "participantsToday": "Participants completed today",
+    "completed": "Completed",
+    "markCompleted": "Mark as Completed",
+    "progress": "Progress",
+    "day": "Day",
+    "greatJob": "Great job!",
+    "dailyGoalCompleted": "You have completed your daily goal.",
+    "types": {
+      "reading": "Bible Reading",
+      "meditation": "Meditation",
+      "fasting": "Fasting",
+      "communion": "Communion"
+    }
+  },
+  "content": {
+    "library": "Library",
+    "live": "LIVE"
+  },
+  "church": {
+    "noChurchSelected": "No Church Selected",
+    "connectCommunity": "Connect with your local community to see updates, events, and join group challenges.",
+    "findMyChurch": "Find My Church",
+    "give": "Give",
+    "events": "Events",
+    "latestUpdates": "Latest Updates",
+    "noUpdates": "No recent updates.",
+    "changeChurch": "Change Church"
+  },
+  "navigation": {
+    "home": "Home",
+    "challenges": "Challenges",
+    "library": "Library",
+    "church": "Church",
+    "profile": "Profile"
+  }
+}

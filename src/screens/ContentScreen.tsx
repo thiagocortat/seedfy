@@ -8,11 +8,13 @@ import { useTheme } from '../theme';
 import { useContentStore } from '../store/useContentStore';
 import { Ionicons } from '@expo/vector-icons';
 import { ContentItem } from '../services/contentService';
+import { useTranslation } from 'react-i18next';
 
 export const ContentScreen = () => {
   const { items, isLoading, fetchContent } = useContentStore();
   const { spacing, colors } = useTheme();
   const navigation = useNavigation<any>();
+  const { t } = useTranslation();
 
   useEffect(() => {
     fetchContent();
@@ -59,7 +61,7 @@ export const ContentScreen = () => {
 
             {item.isLive && (
               <View style={{ position: 'absolute', top: 10, right: 10, backgroundColor: '#ef4444', paddingHorizontal: 8, paddingVertical: 4, borderRadius: 4 }}>
-                <Typography variant="caption" color="white" weight="bold">LIVE</Typography>
+                <Typography variant="caption" color="white" weight="bold">{t('content.live')}</Typography>
               </View>
             )}
             
@@ -83,7 +85,7 @@ export const ContentScreen = () => {
   return (
     <Screen style={{ padding: spacing.md }}>
       <Typography variant="h1" style={{ marginBottom: spacing.lg, marginHorizontal: spacing.xs }}>
-        Library
+        {t('content.library')}
       </Typography>
 
       <FlatList

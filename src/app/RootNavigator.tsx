@@ -8,6 +8,7 @@ import { MainTabNavigator } from './MainTabNavigator';
 import { OnboardingNavigator } from './OnboardingNavigator';
 import { PlayerScreen } from '../screens/PlayerScreen';
 import { ActivityIndicator, View } from 'react-native';
+import '../i18n'; // Import i18n configuration
 
 const Stack = createNativeStackNavigator();
 

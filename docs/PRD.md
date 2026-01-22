@@ -103,7 +103,7 @@ O **Seedfy** é uma plataforma móvel projetada para promover o crescimento espi
 | **Fase 2** | Core: Grupos e Desafios (CRUD) | Semana 3-4 | ✅ Concluído |
 | **Fase 3** | Conteúdo Multimídia e Player | Semana 5 | ✅ Concluído |
 | **Fase 4** | Integração com Igreja e Feed | Semana 6 | ✅ Concluído |
-| **Fase 5** | Refinamento, Testes e Polimento | Semana 7 | 🔄 Em andamento |
+| **Fase 5** | Refinamento, Testes e Polimento | Semana 7 | ✅ Concluído |
 | **Lançamento** | Deploy nas Lojas (Beta) | Semana 8 | Pendente |
 
 ---

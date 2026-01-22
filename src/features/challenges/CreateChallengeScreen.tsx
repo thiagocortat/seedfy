@@ -11,13 +11,7 @@ import { useChallengeStore } from '../../store/useChallengeStore';
 import { useGroupStore } from '../../store/useGroupStore';
 import { useAuthStore } from '../../store/useAuthStore';
 import { ChallengeType } from '../../services/challengeService';
-
-const TYPES: { type: ChallengeType; label: string }[] = [
-  { type: 'reading', label: 'Bible Reading' },
-  { type: 'meditation', label: 'Meditation' },
-  { type: 'fasting', label: 'Fasting' },
-  { type: 'communion', label: 'Communion' },
-];
+import { useTranslation } from 'react-i18next';
 
 const DURATIONS = [3, 7, 14, 21];
 
@@ -34,6 +28,14 @@ export const CreateChallengeScreen = () => {
   const user = useAuthStore(state => state.user);
   const { groups, fetchUserGroups } = useGroupStore();
   const createChallenge = useChallengeStore(state => state.createChallenge);
+  const { t } = useTranslation();
+
+  const TYPES: { type: ChallengeType; label: string }[] = [
+    { type: 'reading', label: t('challenges.types.reading') },
+    { type: 'meditation', label: t('challenges.types.meditation') },
+    { type: 'fasting', label: t('challenges.types.fasting') },
+    { type: 'communion', label: t('challenges.types.communion') },
+  ];
 
   useEffect(() => {
     if (user) fetchUserGroups(user.id);
@@ -54,7 +56,7 @@ export const CreateChallengeScreen = () => {
       );
       navigation.goBack();
     } catch (error: any) {
-      Alert.alert('Error', error.message);
+      Alert.alert(t('common.error'), error.message);
     } finally {
       setLoading(false);
     }
@@ -62,7 +64,7 @@ export const CreateChallengeScreen = () => {
 
   const renderTypeSelection = () => (
     <View>
-      <Typography variant="h2" style={{ marginBottom: spacing.lg }}>Select Challenge Type</Typography>
+      <Typography variant="h2" style={{ marginBottom: spacing.lg }}>{t('challenges.selectType')}</Typography>
       <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: spacing.md }}>
         {TYPES.map(t => (
           <TouchableOpacity
@@ -91,17 +93,17 @@ export const CreateChallengeScreen = () => {
 
   const renderDetails = () => (
     <View>
-      <Typography variant="h2" style={{ marginBottom: spacing.lg }}>Challenge Details</Typography>
+      <Typography variant="h2" style={{ marginBottom: spacing.lg }}>{t('challenges.details')}</Typography>
       
       <Input
-        label="Title (Optional)"
-        placeholder="e.g. Gospel of John"
+        label={t('challenges.titleOptional')}
+        placeholder={t('challenges.placeholderTitle')}
         value={title}
         onChangeText={setTitle}
         containerStyle={{ marginBottom: spacing.lg }}
       />
 
-      <Typography variant="label" style={{ marginBottom: spacing.sm }}>Duration (Days)</Typography>
+      <Typography variant="label" style={{ marginBottom: spacing.sm }}>{t('challenges.duration')}</Typography>
       <View style={{ flexDirection: 'row', gap: spacing.sm, marginBottom: spacing.xl }}>
         {DURATIONS.map(d => (
           <TouchableOpacity
@@ -116,12 +118,12 @@ export const CreateChallengeScreen = () => {
               borderColor: colors.border
             }}
           >
-            <Typography color={duration === d ? colors.surface : colors.text}>{d} Days</Typography>
+            <Typography color={duration === d ? colors.surface : colors.text}>{d} {t('common.days')}</Typography>
           </TouchableOpacity>
         ))}
       </View>
 
-      <Typography variant="label" style={{ marginBottom: spacing.sm }}>Select Group</Typography>
+      <Typography variant="label" style={{ marginBottom: spacing.sm }}>{t('challenges.selectGroup')}</Typography>
       {groups.length > 0 ? (
         <ScrollView style={{ maxHeight: 200 }}>
           {groups.map(g => (
@@ -144,21 +146,21 @@ export const CreateChallengeScreen = () => {
       ) : (
         <Card style={{ marginBottom: spacing.md, padding: spacing.md }}>
           <Typography variant="body" color={colors.textSecondary} align="center">
-            You don't have any groups yet.
+            {t('challenges.noGroups')}
           </Typography>
           <TouchableOpacity onPress={() => navigation.navigate('Groups', { screen: 'CreateGroup' })}>
             <Typography variant="label" color={colors.primary} align="center" style={{ marginTop: spacing.xs }}>
-              Create a Group
+              {t('challenges.createGroup')}
             </Typography>
           </TouchableOpacity>
         </Card>
       )}
 
       <Button
-        title="Create Challenge"
+        title={t('challenges.create')}
         onPress={() => {
           if (!selectedGroupId) {
-            Alert.alert('Selection Required', 'Please select a group to create a challenge.');
+            Alert.alert(t('challenges.selectionRequired'), t('challenges.selectGroupError'));
             return;
           }
           handleCreate();

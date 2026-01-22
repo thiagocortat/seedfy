@@ -10,6 +10,7 @@ import { useTheme } from '../../theme';
 import { useAuthStore } from '../../store/useAuthStore';
 import { useUserStore } from '../../store/useUserStore';
 import { useNavigation } from '@react-navigation/native';
+import { useTranslation } from 'react-i18next';
 
 export const SignUpScreen = () => {
   const [email, setEmail] = useState('');
@@ -22,15 +23,16 @@ export const SignUpScreen = () => {
   const setUser = useAuthStore(state => state.setUser);
   const fetchProfile = useUserStore(state => state.fetchProfile);
   const navigation = useNavigation<any>();
+  const { t } = useTranslation();
 
   const handleSignUp = async () => {
     if (!email || !password || !confirmPassword) {
-      setError('Please fill in all fields');
+      setError(t('auth.fillAllFields'));
       return;
     }
 
     if (password !== confirmPassword) {
-      setError('Passwords do not match');
+      setError(t('auth.passwordsDoNotMatch'));
       return;
     }
 
@@ -56,7 +58,7 @@ export const SignUpScreen = () => {
       // Onboarding flow will be triggered by RootNavigator observing user state
     } catch (err: any) {
       setError(err.message || 'Failed to sign up');
-      Alert.alert('Error', err.message);
+      Alert.alert(t('common.error'), err.message);
     } finally {
       setLoading(false);
     }
@@ -65,15 +67,15 @@ export const SignUpScreen = () => {
   return (
     <Screen style={{ padding: spacing.lg, justifyContent: 'center' }}>
       <Typography variant="h1" style={{ marginBottom: spacing.xs }}>
-        Join Seedfy
+        {t('auth.joinSeedfy')}
       </Typography>
       <Typography variant="body" color={colors.textSecondary} style={{ marginBottom: spacing.xl }}>
-        Start your group spiritual challenges today
+        {t('auth.signUpSubtitle')}
       </Typography>
 
       <Input
         label="Email"
-        placeholder="Enter your email"
+        placeholder={t('auth.emailPlaceholder')}
         value={email}
         onChangeText={setEmail}
         autoCapitalize="none"
@@ -81,16 +83,16 @@ export const SignUpScreen = () => {
       />
 
       <Input
-        label="Password"
-        placeholder="Create a password"
+        label="Password" // Should probably have a key for Password label
+        placeholder={t('auth.createPassword')}
         value={password}
         onChangeText={setPassword}
         secureTextEntry
       />
 
       <Input
-        label="Confirm Password"
-        placeholder="Confirm your password"
+        label={t('auth.confirmPassword')}
+        placeholder={t('auth.confirmPassword')}
         value={confirmPassword}
         onChangeText={setConfirmPassword}
         secureTextEntry
@@ -99,7 +101,7 @@ export const SignUpScreen = () => {
       />
 
       <Button
-        title="Sign Up"
+        title={t('auth.signUp')}
         onPress={handleSignUp}
         loading={loading}
         style={{ marginBottom: spacing.lg }}
@@ -107,11 +109,11 @@ export const SignUpScreen = () => {
 
       <View style={styles.footer}>
         <Typography variant="body" color={colors.textSecondary}>
-          Already have an account?{' '}
+          {t('auth.alreadyHaveAccount')}{' '}
         </Typography>
         <TouchableOpacity onPress={() => navigation.navigate('SignIn')}>
           <Typography variant="body" color={colors.primary} weight="bold">
-            Sign In
+            {t('auth.signIn')}
           </Typography>
         </TouchableOpacity>
       </View>

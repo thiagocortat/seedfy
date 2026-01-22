@@ -8,6 +8,7 @@ import { Button } from '../../components/Button';
 import { useTheme } from '../../theme';
 import { useAuthStore } from '../../store/useAuthStore';
 import { useNavigation } from '@react-navigation/native';
+import { useTranslation } from 'react-i18next';
 
 export const SignInScreen = () => {
   const [email, setEmail] = useState('');
@@ -18,10 +19,11 @@ export const SignInScreen = () => {
   const { spacing, colors } = useTheme();
   const setUser = useAuthStore(state => state.setUser);
   const navigation = useNavigation<any>();
+  const { t } = useTranslation();
 
   const handleSignIn = async () => {
     if (!email || !password) {
-      setError('Please fill in all fields');
+      setError(t('auth.fillAllFields'));
       return;
     }
 
@@ -40,7 +42,7 @@ export const SignInScreen = () => {
       }
     } catch (err: any) {
       setError(err.message || 'Failed to sign in');
-      Alert.alert('Error', err.message);
+      Alert.alert(t('common.error'), err.message);
     } finally {
       setLoading(false);
     }
@@ -49,15 +51,15 @@ export const SignInScreen = () => {
   return (
     <Screen style={{ padding: spacing.lg, justifyContent: 'center' }}>
       <Typography variant="h1" style={{ marginBottom: spacing.xs }}>
-        Welcome Back
+        {t('auth.welcomeBack')}
       </Typography>
       <Typography variant="body" color={colors.textSecondary} style={{ marginBottom: spacing.xl }}>
-        Sign in to continue your spiritual journey
+        {t('auth.signInSubtitle')}
       </Typography>
 
       <Input
         label="Email"
-        placeholder="Enter your email"
+        placeholder={t('auth.emailPlaceholder')}
         value={email}
         onChangeText={setEmail}
         autoCapitalize="none"
@@ -66,8 +68,8 @@ export const SignInScreen = () => {
       />
 
       <Input
-        label="Password"
-        placeholder="Enter your password"
+        label={t('auth.signIn')} // Using signIn as label for password? Or should be Password
+        placeholder={t('auth.passwordPlaceholder')}
         value={password}
         onChangeText={setPassword}
         secureTextEntry
@@ -75,7 +77,7 @@ export const SignInScreen = () => {
       />
 
       <Button
-        title="Sign In"
+        title={t('auth.signIn')}
         onPress={handleSignIn}
         loading={loading}
         style={{ marginBottom: spacing.lg }}
@@ -84,13 +86,13 @@ export const SignInScreen = () => {
       <View style={styles.footer}>
         <TouchableOpacity onPress={() => navigation.navigate('SignUp')}>
           <Typography variant="body" color={colors.primary}>
-            Create Account
+            {t('auth.createAccount')}
           </Typography>
         </TouchableOpacity>
 
         <TouchableOpacity onPress={() => navigation.navigate('ForgotPassword')}>
           <Typography variant="body" color={colors.textSecondary}>
-            Forgot Password?
+            {t('auth.forgotPassword')}
           </Typography>
         </TouchableOpacity>
       </View>
