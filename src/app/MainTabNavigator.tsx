@@ -3,7 +3,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { HomeScreen } from '../screens/HomeScreen';
 import { ChallengesNavigator } from './ChallengesNavigator';
 import { ContentScreen } from '../screens/ContentScreen';
-import { ChurchScreen } from '../screens/ChurchScreen';
+import { ChurchNavigator } from './ChurchNavigator';
 import { ProfileNavigator } from './ProfileNavigator';
 import { useTheme } from '../theme';
 import { Ionicons } from '@expo/vector-icons';
@@ -51,7 +51,7 @@ export const MainTabNavigator = () => {
       <Tab.Screen name="Home" component={HomeScreen} options={{ tabBarLabel: t('navigation.home') }} />
       <Tab.Screen name="Challenges" component={ChallengesNavigator} options={{ tabBarLabel: t('navigation.challenges') }} />
       <Tab.Screen name="Content" component={ContentScreen} options={{ tabBarLabel: t('navigation.library') }} />
-      <Tab.Screen name="Church" component={ChurchScreen} options={{ tabBarLabel: t('navigation.church') }} />
+      <Tab.Screen name="Church" component={ChurchNavigator} options={{ tabBarLabel: t('navigation.church') }} />
       <Tab.Screen name="Profile" component={ProfileNavigator} options={{ tabBarLabel: t('navigation.profile') }} />
     </Tab.Navigator>
   );

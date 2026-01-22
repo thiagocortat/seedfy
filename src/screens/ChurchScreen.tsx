@@ -46,7 +46,7 @@ export const ChurchScreen = () => {
   }, [profile?.churchId]);
 
   const handleFindChurch = () => {
-    navigation.navigate('Profile', { screen: 'EditChurch', params: { isEditing: true } });
+    navigation.navigate('EditChurch', { isEditing: true });
   };
 
   const handleGive = () => {

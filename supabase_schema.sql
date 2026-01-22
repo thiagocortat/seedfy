@@ -11,7 +11,8 @@ create table public.users (
   interests text[],
   created_at timestamptz default now(),
   onboarding_completed boolean default false,
-  email_verified boolean default false
+  email_verified boolean default false,
+  push_token text
 );
 
 create table public.churches (

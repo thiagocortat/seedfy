@@ -48,8 +48,13 @@ export const SignUpScreen = () => {
       if (signUpError) throw signUpError;
       if (!data.user) throw new Error('No user data returned');
 
-      // Create user profile in Supabase immediately
-      await userService.createUser(data.user.id, email);
+      // Check if user profile already exists to prevent duplicate key error
+      const existingUser = await userService.getUser(data.user.id);
+      
+      if (!existingUser) {
+        // Create user profile in Supabase only if it doesn't exist
+        await userService.createUser(data.user.id, email);
+      }
       
       // Fetch the profile to update the store and prevent race conditions
       await fetchProfile(data.user.id);
