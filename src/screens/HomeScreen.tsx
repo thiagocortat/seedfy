@@ -112,7 +112,10 @@ export const HomeScreen = () => {
             showsHorizontalScrollIndicator={false}
             keyExtractor={item => item.id}
             renderItem={({ item }) => (
-              <TouchableOpacity style={{ width: 140, marginRight: spacing.md }}>
+              <TouchableOpacity 
+                style={{ width: 140, marginRight: spacing.md }}
+                onPress={() => navigation.navigate('Player', { item })}
+              >
                 <View style={{ height: 140, backgroundColor: colors.secondary, borderRadius: layout.radius.md, marginBottom: spacing.sm, overflow: 'hidden' }}>
                   {item.coverUrl ? (
                     <Image source={{ uri: item.coverUrl }} style={{ width: '100%', height: '100%' }} />

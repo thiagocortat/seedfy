@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, ScrollView, Image, ActivityIndicator } from 'react-native';
+import { View, ScrollView, Image, ActivityIndicator, Linking, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Screen } from '../components/Screen';
 import { Typography } from '../components/Typography';
@@ -13,6 +13,7 @@ import { Ionicons } from '@expo/vector-icons';
 export const ChurchScreen = () => {
   const { profile } = useUserStore();
   const [church, setChurch] = useState<Church | null>(null);
+  const [updates, setUpdates] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   
   const { spacing, colors, layout } = useTheme();
@@ -23,8 +24,12 @@ export const ChurchScreen = () => {
       if (profile?.churchId) {
         setLoading(true);
         try {
-          const data = await churchService.getChurch(profile.churchId);
-          setChurch(data);
+          const [churchData, updatesData] = await Promise.all([
+            churchService.getChurch(profile.churchId),
+            churchService.getUpdates(profile.churchId)
+          ]);
+          setChurch(churchData);
+          setUpdates(updatesData);
         } catch (error) {
           console.error(error);
         } finally {
@@ -40,6 +45,18 @@ export const ChurchScreen = () => {
 
   const handleFindChurch = () => {
     navigation.navigate('Profile', { screen: 'EditChurch', params: { isEditing: true } });
+  };
+
+  const handleGive = () => {
+    // In production, use church.giveUrl
+    const url = 'https://www.paypal.com/donate'; 
+    Linking.openURL(url).catch(err => Alert.alert('Error', 'Could not open donation page'));
+  };
+
+  const handleEvents = () => {
+    // In production, use church.eventsUrl
+    const url = 'https://calendar.google.com';
+    Linking.openURL(url).catch(err => Alert.alert('Error', 'Could not open events page'));
   };
 
   if (loading) {
@@ -115,13 +132,13 @@ export const ChurchScreen = () => {
             title="Give" 
             variant="outline" 
             style={{ flex: 1 }} 
-            onPress={() => {}} // Placeholder
+            onPress={handleGive}
           />
           <Button 
             title="Events" 
             variant="outline" 
             style={{ flex: 1 }}
-            onPress={() => {}} // Placeholder
+            onPress={handleEvents}
           />
         </View>
 
@@ -129,36 +146,26 @@ export const ChurchScreen = () => {
         <View>
           <Typography variant="h3" style={{ marginBottom: spacing.md }}>Latest Updates</Typography>
           
-          {/* Placeholder Feed Items */}
-          <Card style={{ marginBottom: spacing.md }}>
-            <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: spacing.sm }}>
-              <View style={{ width: 32, height: 32, borderRadius: 16, backgroundColor: colors.primary, justifyContent: 'center', alignItems: 'center', marginRight: spacing.sm }}>
-                <Ionicons name="megaphone" size={16} color={colors.surface} />
+          {updates.length > 0 ? updates.map((update, index) => (
+            <Card key={update.id || index} style={{ marginBottom: spacing.md }}>
+              <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: spacing.sm }}>
+                <View style={{ width: 32, height: 32, borderRadius: 16, backgroundColor: update.color || colors.primary, justifyContent: 'center', alignItems: 'center', marginRight: spacing.sm }}>
+                  <Ionicons name={update.icon as any} size={16} color={colors.surface} />
+                </View>
+                <View>
+                  <Typography variant="h3" style={{ fontSize: 16 }}>{update.title}</Typography>
+                  <Typography variant="caption" color={colors.textSecondary}>{update.date}</Typography>
+                </View>
               </View>
-              <View>
-                <Typography variant="h3" style={{ fontSize: 16 }}>Sunday Service</Typography>
-                <Typography variant="caption" color={colors.textSecondary}>2 days ago</Typography>
-              </View>
-            </View>
-            <Typography variant="body">
-              Join us this Sunday as we continue our series on Community. Services at 9am and 11am.
+              <Typography variant="body">
+                {update.content}
+              </Typography>
+            </Card>
+          )) : (
+            <Typography variant="body" color={colors.textSecondary} style={{ fontStyle: 'italic' }}>
+               No recent updates.
             </Typography>
-          </Card>
-
-          <Card style={{ marginBottom: spacing.md }}>
-             <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: spacing.sm }}>
-              <View style={{ width: 32, height: 32, borderRadius: 16, backgroundColor: colors.accent, justifyContent: 'center', alignItems: 'center', marginRight: spacing.sm }}>
-                <Ionicons name="calendar" size={16} color={colors.surface} />
-              </View>
-              <View>
-                <Typography variant="h3" style={{ fontSize: 16 }}>Youth Night</Typography>
-                <Typography variant="caption" color={colors.textSecondary}>5 days ago</Typography>
-              </View>
-            </View>
-            <Typography variant="body">
-              Friday night hangouts for all youth! Pizza and games starting at 7pm.
-            </Typography>
-          </Card>
+          )}
         </View>
 
         <Button 

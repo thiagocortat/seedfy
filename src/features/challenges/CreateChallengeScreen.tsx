@@ -5,6 +5,7 @@ import { Screen } from '../../components/Screen';
 import { Typography } from '../../components/Typography';
 import { Input } from '../../components/Input';
 import { Button } from '../../components/Button';
+import { Card } from '../../components/Card';
 import { useTheme } from '../../theme';
 import { useChallengeStore } from '../../store/useChallengeStore';
 import { useGroupStore } from '../../store/useGroupStore';
@@ -121,30 +122,49 @@ export const CreateChallengeScreen = () => {
       </View>
 
       <Typography variant="label" style={{ marginBottom: spacing.sm }}>Select Group</Typography>
-      <ScrollView style={{ maxHeight: 200 }}>
-        {groups.map(g => (
-          <TouchableOpacity
-            key={g.id}
-            onPress={() => setSelectedGroupId(g.id)}
-            style={{
-              padding: spacing.md,
-              backgroundColor: selectedGroupId === g.id ? colors.primary : colors.surface,
-              borderRadius: layout.radius.md,
-              marginBottom: spacing.sm,
-              borderWidth: 1,
-              borderColor: colors.border
-            }}
-          >
-            <Typography color={selectedGroupId === g.id ? colors.surface : colors.text}>{g.name}</Typography>
+      {groups.length > 0 ? (
+        <ScrollView style={{ maxHeight: 200 }}>
+          {groups.map(g => (
+            <TouchableOpacity
+              key={g.id}
+              onPress={() => setSelectedGroupId(g.id)}
+              style={{
+                padding: spacing.md,
+                backgroundColor: selectedGroupId === g.id ? colors.primary : colors.surface,
+                borderRadius: layout.radius.md,
+                marginBottom: spacing.sm,
+                borderWidth: 1,
+                borderColor: colors.border
+              }}
+            >
+              <Typography color={selectedGroupId === g.id ? colors.surface : colors.text}>{g.name}</Typography>
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
+      ) : (
+        <Card style={{ marginBottom: spacing.md, padding: spacing.md }}>
+          <Typography variant="body" color={colors.textSecondary} align="center">
+            You don't have any groups yet.
+          </Typography>
+          <TouchableOpacity onPress={() => navigation.navigate('Groups', { screen: 'CreateGroup' })}>
+            <Typography variant="label" color={colors.primary} align="center" style={{ marginTop: spacing.xs }}>
+              Create a Group
+            </Typography>
           </TouchableOpacity>
-        ))}
-      </ScrollView>
+        </Card>
+      )}
 
       <Button
         title="Create Challenge"
-        onPress={handleCreate}
+        onPress={() => {
+          if (!selectedGroupId) {
+            Alert.alert('Selection Required', 'Please select a group to create a challenge.');
+            return;
+          }
+          handleCreate();
+        }}
         loading={loading}
-        disabled={!selectedGroupId}
+        // Button is always enabled to provide feedback
         style={{ marginTop: spacing.lg }}
       />
     </View>

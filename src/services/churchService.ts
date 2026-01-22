@@ -41,5 +41,27 @@ export const churchService = {
       city: data.city,
       state: data.state,
     };
+  },
+
+  async getUpdates(churchId: string) {
+    // In a real app, this would query a 'church_updates' table.
+    // For now, we mock it based on ID to show dynamic behavior
+    // You can add a table later.
+    
+    // Simulating delay
+    await new Promise(r => setTimeout(r, 500));
+
+    const commonUpdates = [
+      { id: '1', title: 'Sunday Service', date: '2 days ago', icon: 'megaphone', color: '#4F46E5', content: 'Join us this Sunday as we continue our series on Community. Services at 9am and 11am.' },
+    ];
+
+    if (churchId) {
+       // Add specific updates for demonstration
+       return [
+         ...commonUpdates,
+         { id: '2', title: 'Youth Night', date: '5 days ago', icon: 'calendar', color: '#F59E0B', content: 'Friday night hangouts for all youth! Pizza and games starting at 7pm.' }
+       ];
+    }
+    return commonUpdates;
   }
 };

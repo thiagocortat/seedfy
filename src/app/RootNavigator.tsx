@@ -6,6 +6,7 @@ import { useAuthStore } from '../store/useAuthStore';
 import { AuthNavigator } from './AuthNavigator';
 import { MainTabNavigator } from './MainTabNavigator';
 import { OnboardingNavigator } from './OnboardingNavigator';
+import { PlayerScreen } from '../screens/PlayerScreen';
 import { ActivityIndicator, View } from 'react-native';
 
 const Stack = createNativeStackNavigator();
@@ -54,7 +55,17 @@ export const RootNavigator = () => {
       ) : !profile?.onboardingCompleted ? (
         <Stack.Screen name="Onboarding" component={OnboardingNavigator} />
       ) : (
-        <Stack.Screen name="Main" component={MainTabNavigator} />
+        <>
+          <Stack.Screen name="Main" component={MainTabNavigator} />
+          <Stack.Screen 
+            name="Player" 
+            component={PlayerScreen} 
+            options={{ 
+              presentation: 'modal',
+              animation: 'slide_from_bottom'
+            }} 
+          />
+        </>
       )}
     </Stack.Navigator>
   );
