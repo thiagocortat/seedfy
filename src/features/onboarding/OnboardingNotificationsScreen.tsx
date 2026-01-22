@@ -22,13 +22,17 @@ export const OnboardingNotificationsScreen = () => {
 
     setLoading(true);
     try {
+      let pushToken = null;
       if (enableNotifications) {
-        await notificationService.registerForPushNotificationsAsync();
+        pushToken = await notificationService.registerForPushNotificationsAsync();
         // Schedule default reminder at 8 AM
         await notificationService.scheduleDailyReminder(8, 0);
       }
 
-      await updateProfile(user.id, { onboardingCompleted: true });
+      await updateProfile(user.id, { 
+        onboardingCompleted: true,
+        pushToken: pushToken
+      });
       // RootNavigator will automatically switch to MainTabNavigator
     } catch (error: any) {
       Alert.alert('Error', error.message);

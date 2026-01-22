@@ -13,7 +13,13 @@
       "bundleIdentifier": "com.seedfy.app"
     },
     "android": {
-      "package": "com.seedfy.app"
+      "package": "com.seedfy.app",
+      "permissions": [
+        "android.permission.RECORD_AUDIO",
+        "android.permission.MODIFY_AUDIO_SETTINGS",
+        "android.permission.RECORD_AUDIO",
+        "android.permission.MODIFY_AUDIO_SETTINGS"
+      ]
     },
     "plugins": [
       "expo-secure-store",
@@ -21,6 +27,18 @@
       "expo-notifications",
       "expo-font"
     ],
-    "scheme": "seedfy"
+    "scheme": "seedfy",
+    "extra": {
+      "eas": {
+        "projectId": "a7c529ff-9b15-4971-a02d-d372c9cf683f"
+      }
+    },
+    "owner": "thiagocortat",
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/a7c529ff-9b15-4971-a02d-d372c9cf683f"
+    }
   }
 }

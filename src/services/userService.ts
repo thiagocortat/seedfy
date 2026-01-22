@@ -10,6 +10,7 @@ export interface UserProfile {
   createdAt: string;
   onboardingCompleted: boolean;
   emailVerified?: boolean;
+  pushToken?: string | null;
 }
 
 export const userService = {
@@ -35,6 +36,7 @@ export const userService = {
       createdAt: data.created_at,
       onboardingCompleted: data.onboarding_completed,
       emailVerified: data.email_verified,
+      pushToken: data.push_token,
     };
   },
 
@@ -79,6 +81,7 @@ export const userService = {
     if (data.interests !== undefined) updateData.interests = data.interests;
     if (data.onboardingCompleted !== undefined) updateData.onboarding_completed = data.onboardingCompleted;
     if (data.emailVerified !== undefined) updateData.email_verified = data.emailVerified;
+    if (data.pushToken !== undefined) updateData.push_token = data.pushToken;
 
     const { error } = await supabase
       .from('users')
