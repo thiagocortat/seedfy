@@ -61,7 +61,10 @@ export const challengeService = {
       .select()
       .single();
 
-    if (challengeError) throw challengeError;
+    if (challengeError) {
+      console.error('Error creating challenge:', challengeError);
+      throw new Error(`Failed to create challenge: ${challengeError.message}`);
+    }
 
     // 2. Add Creator as Participant
     const participantData = {

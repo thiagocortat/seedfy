@@ -39,7 +39,10 @@ export const groupService = {
       .select()
       .single();
 
-    if (groupError) throw groupError;
+    if (groupError) {
+      console.error('Error creating group:', groupError);
+      throw new Error(`Failed to create group: ${groupError.message}`);
+    }
 
     // 2. Add Creator as Member
     const memberData = {
@@ -49,7 +52,12 @@ export const groupService = {
       joined_at: new Date().toISOString(),
     };
 
-    await supabase.from('group_members').insert(memberData);
+    const { error: memberError } = await supabase.from('group_members').insert(memberData);
+    if (memberError) {
+       // Ideally rollback group creation, but for now log it.
+       console.error('Error adding creator to group:', memberError);
+       throw new Error(`Group created but failed to add member: ${memberError.message}`);
+    }
       
     // 3. Log Activity
     const activityData = {

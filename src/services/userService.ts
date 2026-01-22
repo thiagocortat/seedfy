@@ -20,7 +20,10 @@ export const userService = {
       .eq('id', userId)
       .single();
 
-    if (error || !data) return null;
+    if (error || !data) {
+      console.warn(`User ${userId} not found or error:`, error?.message);
+      return null;
+    }
 
     return {
       id: data.id,
@@ -51,7 +54,10 @@ export const userService = {
       .from('users')
       .insert(newUser);
 
-    if (error) throw error;
+    if (error) {
+      console.error('Error creating user:', error);
+      throw new Error(`Failed to create user profile: ${error.message}`);
+    }
 
     return {
       id: userId,
@@ -79,6 +85,9 @@ export const userService = {
       .update(updateData)
       .eq('id', userId);
 
-    if (error) throw error;
+    if (error) {
+      console.error('Error updating user:', error);
+      throw new Error(`Failed to update user profile: ${error.message}`);
+    }
   }
 };
