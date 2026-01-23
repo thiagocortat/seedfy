@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, ScrollView, Image, ActivityIndicator, Linking, Alert } from 'react-native';
+import { View, ScrollView, Image, ActivityIndicator, Linking, Alert, FlatList, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Screen } from '../components/Screen';
 import { Typography } from '../components/Typography';
@@ -8,34 +8,41 @@ import { Card } from '../components/Card';
 import { useTheme } from '../theme';
 import { useUserStore } from '../store/useUserStore';
 import { churchService, Church } from '../services/churchService';
+import { useChurchPostsList } from '../features/church/hooks/useChurchPosts';
 import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
 
 export const ChurchScreen = () => {
   const { profile } = useUserStore();
   const [church, setChurch] = useState<Church | null>(null);
-  const [updates, setUpdates] = useState<any[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [loadingChurch, setLoadingChurch] = useState(false);
   
+  const { 
+    data, 
+    fetchNextPage, 
+    hasNextPage, 
+    isFetchingNextPage, 
+    isLoading: isLoadingPosts, 
+    refetch 
+  } = useChurchPostsList(profile?.churchId);
+
   const { spacing, colors, layout } = useTheme();
   const navigation = useNavigation<any>();
   const { t } = useTranslation();
 
+  const posts = data?.pages.flat() || [];
+
   useEffect(() => {
     const loadChurch = async () => {
       if (profile?.churchId) {
-        setLoading(true);
+        setLoadingChurch(true);
         try {
-          const [churchData, updatesData] = await Promise.all([
-            churchService.getChurch(profile.churchId),
-            churchService.getUpdates(profile.churchId)
-          ]);
+          const churchData = await churchService.getChurch(profile.churchId);
           setChurch(churchData);
-          setUpdates(updatesData);
         } catch (error) {
           console.error(error);
         } finally {
-          setLoading(false);
+          setLoadingChurch(false);
         }
       } else {
         setChurch(null);
@@ -61,41 +68,37 @@ export const ChurchScreen = () => {
     Linking.openURL(url).catch(err => Alert.alert(t('common.error'), 'Could not open events page'));
   };
 
-  if (loading) {
-    return (
-      <Screen style={{ justifyContent: 'center', alignItems: 'center' }}>
-        <ActivityIndicator size="large" color={colors.primary} />
-      </Screen>
-    );
-  }
+  const handlePostPress = (postId: string) => {
+    navigation.navigate('PostDetail', { postId });
+  };
 
-  if (!profile?.churchId || !church) {
-    return (
-      <Screen style={{ padding: spacing.lg, justifyContent: 'center', alignItems: 'center' }}>
-        <View style={{ marginBottom: spacing.xl, padding: spacing.xl, backgroundColor: colors.surface, borderRadius: 100 }}>
-          <Ionicons name="people" size={64} color={colors.primary} />
+  const renderHeader = () => {
+    if (!profile?.churchId || !church) {
+      return (
+        <View style={{ padding: spacing.lg, justifyContent: 'center', alignItems: 'center', minHeight: 400 }}>
+          <View style={{ marginBottom: spacing.xl, padding: spacing.xl, backgroundColor: colors.surface, borderRadius: 100 }}>
+            <Ionicons name="people" size={64} color={colors.primary} />
+          </View>
+          
+          <Typography variant="h2" align="center" style={{ marginBottom: spacing.sm }}>
+            {t('church.noChurchSelected')}
+          </Typography>
+          
+          <Typography variant="body" align="center" color={colors.textSecondary} style={{ marginBottom: spacing.xl }}>
+            {t('church.connectCommunity')}
+          </Typography>
+
+          <Button 
+            title={t('church.findMyChurch')} 
+            onPress={handleFindChurch}
+            style={{ width: '100%' }}
+          />
         </View>
-        
-        <Typography variant="h2" align="center" style={{ marginBottom: spacing.sm }}>
-          {t('church.noChurchSelected')}
-        </Typography>
-        
-        <Typography variant="body" align="center" color={colors.textSecondary} style={{ marginBottom: spacing.xl }}>
-          {t('church.connectCommunity')}
-        </Typography>
+      );
+    }
 
-        <Button 
-          title={t('church.findMyChurch')} 
-          onPress={handleFindChurch}
-          style={{ width: '100%' }}
-        />
-      </Screen>
-    );
-  }
-
-  return (
-    <Screen>
-      <ScrollView contentContainerStyle={{ padding: spacing.lg }}>
+    return (
+      <View style={{ marginBottom: spacing.xl }}>
         {/* Church Header */}
         <View style={{ alignItems: 'center', marginBottom: spacing.xl }}>
           <View style={{ 
@@ -144,39 +147,82 @@ export const ChurchScreen = () => {
           />
         </View>
 
-        {/* Feed Section */}
-        <View>
-          <Typography variant="h3" style={{ marginBottom: spacing.md }}>{t('church.latestUpdates')}</Typography>
-          
-          {updates.length > 0 ? updates.map((update, index) => (
-            <Card key={update.id || index} style={{ marginBottom: spacing.md }}>
-              <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: spacing.sm }}>
-                <View style={{ width: 32, height: 32, borderRadius: 16, backgroundColor: update.color || colors.primary, justifyContent: 'center', alignItems: 'center', marginRight: spacing.sm }}>
-                  <Ionicons name={update.icon as any} size={16} color={colors.surface} />
-                </View>
-                <View>
-                  <Typography variant="h3" style={{ fontSize: 16 }}>{update.title}</Typography>
-                  <Typography variant="caption" color={colors.textSecondary}>{update.date}</Typography>
-                </View>
-              </View>
-              <Typography variant="body">
-                {update.content}
-              </Typography>
-            </Card>
-          )) : (
-            <Typography variant="body" color={colors.textSecondary} style={{ fontStyle: 'italic' }}>
-               {t('church.noUpdates')}
-            </Typography>
-          )}
-        </View>
+        <Typography variant="h3" style={{ marginBottom: spacing.md }}>{t('church.latestUpdates')}</Typography>
+      </View>
+    );
+  };
 
+  const renderFooter = () => {
+    if (!profile?.churchId) return null;
+    
+    return (
+      <View style={{ paddingVertical: spacing.xl }}>
+        {isFetchingNextPage && <ActivityIndicator color={colors.primary} />}
         <Button 
           title={t('church.changeChurch')} 
           variant="ghost" 
           onPress={handleFindChurch}
-          style={{ marginTop: spacing.xl }}
+          style={{ marginTop: spacing.lg }}
         />
-      </ScrollView>
+      </View>
+    );
+  };
+
+  const renderEmpty = () => {
+    if (isLoadingPosts || loadingChurch) return <ActivityIndicator size="large" color={colors.primary} style={{ marginTop: spacing.xl }} />;
+    if (!profile?.churchId) return null; // Header handles empty state for no church
+
+    return (
+      <Typography variant="body" color={colors.textSecondary} style={{ fontStyle: 'italic', textAlign: 'center', marginTop: spacing.xl }}>
+         {t('church.noUpdates')}
+      </Typography>
+    );
+  };
+
+  return (
+    <Screen>
+      <FlatList
+        data={posts}
+        keyExtractor={item => item.id}
+        ListHeaderComponent={renderHeader}
+        ListFooterComponent={renderFooter}
+        ListEmptyComponent={renderEmpty}
+        contentContainerStyle={{ padding: spacing.lg }}
+        onEndReached={() => {
+          if (hasNextPage) fetchNextPage();
+        }}
+        onEndReachedThreshold={0.5}
+        refreshing={isLoadingPosts && !isFetchingNextPage}
+        onRefresh={refetch}
+        renderItem={({ item }) => (
+          <Card style={{ marginBottom: spacing.md }} onPress={() => handlePostPress(item.id)}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: spacing.sm }}>
+              <View style={{ width: 32, height: 32, borderRadius: 16, backgroundColor: colors.primary, justifyContent: 'center', alignItems: 'center', marginRight: spacing.sm }}>
+                <Ionicons name="megaphone" size={16} color={colors.surface} />
+              </View>
+              <View style={{ flex: 1 }}>
+                <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <Typography variant="h3" style={{ fontSize: 16, flex: 1 }} numberOfLines={1}>{item.title}</Typography>
+                  {item.pinned && <Ionicons name="pin" size={14} color={colors.primary} />}
+                </View>
+                <Typography variant="caption" color={colors.textSecondary}>{new Date(item.published_at).toLocaleDateString()}</Typography>
+              </View>
+            </View>
+            
+            {item.image_url && (
+              <Image 
+                source={{ uri: item.image_url }} 
+                style={{ width: '100%', height: 150, borderRadius: 8, marginBottom: spacing.sm }} 
+                resizeMode="cover"
+              />
+            )}
+
+            <Typography variant="body" numberOfLines={3}>
+              {item.excerpt || item.body}
+            </Typography>
+          </Card>
+        )}
+      />
     </Screen>
   );
 };

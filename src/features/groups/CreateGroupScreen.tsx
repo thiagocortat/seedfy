@@ -56,6 +56,14 @@ export const CreateGroupScreen = () => {
         title="Create Group"
         onPress={handleCreate}
         loading={loading}
+        style={{ marginBottom: spacing.md }}
+      />
+      
+      <Button
+        title="Cancel"
+        onPress={() => navigation.goBack()}
+        variant="ghost"
+        disabled={loading}
       />
     </Screen>
   );

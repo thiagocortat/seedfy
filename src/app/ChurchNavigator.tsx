@@ -2,6 +2,7 @@ import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { ChurchScreen } from '../screens/ChurchScreen';
 import { OnboardingChurchScreen } from '../features/onboarding/OnboardingChurchScreen';
+import { PostDetailScreen } from '../features/church/PostDetailScreen';
 import { useTranslation } from 'react-i18next';
 
 const Stack = createNativeStackNavigator();
@@ -20,6 +21,11 @@ export const ChurchNavigator = () => {
         name="EditChurch" 
         component={OnboardingChurchScreen} 
         options={{ title: t('church.changeChurch') || 'Select Church' }} 
+      />
+      <Stack.Screen 
+        name="PostDetail" 
+        component={PostDetailScreen} 
+        options={{ title: 'Post' }} 
       />
     </Stack.Navigator>
   );

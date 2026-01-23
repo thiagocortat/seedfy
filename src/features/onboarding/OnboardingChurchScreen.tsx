@@ -10,6 +10,8 @@ import { useUserStore } from '../../store/useUserStore';
 import { useAuthStore } from '../../store/useAuthStore';
 import { churchService, Church } from '../../services/churchService';
 
+import { useQueryClient } from '@tanstack/react-query';
+
 export const OnboardingChurchScreen = () => {
   const [churches, setChurches] = useState<Church[]>([]);
   const [selectedChurchId, setSelectedChurchId] = useState<string | null>(null);
@@ -22,8 +24,10 @@ export const OnboardingChurchScreen = () => {
   const user = useAuthStore(state => state.user);
   const updateProfile = useUserStore(state => state.updateProfile);
   const isEditing = route.params?.isEditing;
+  const queryClient = useQueryClient();
 
   useEffect(() => {
+    // ... rest of useEffect
     const fetchChurches = async () => {
       try {
         const data = await churchService.getChurches();
@@ -42,7 +46,12 @@ export const OnboardingChurchScreen = () => {
 
     setLoading(true);
     try {
-      await updateProfile(user.id, { churchId: skip ? null : selectedChurchId });
+      const newChurchId = skip ? null : selectedChurchId;
+      await updateProfile(user.id, { churchId: newChurchId });
+      
+      // Invalidate posts cache to ensure fresh data for new church
+      queryClient.invalidateQueries({ queryKey: ['churchPostsPreview'] });
+      queryClient.invalidateQueries({ queryKey: ['churchPostsList'] });
       
       if (isEditing) {
         navigation.goBack();

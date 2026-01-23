@@ -148,7 +148,7 @@ export const CreateChallengeScreen = () => {
           <Typography variant="body" color={colors.textSecondary} align="center">
             {t('challenges.noGroups')}
           </Typography>
-          <TouchableOpacity onPress={() => navigation.navigate('Groups', { screen: 'CreateGroup' })}>
+          <TouchableOpacity onPress={() => navigation.navigate('Profile', { screen: 'CreateGroup' })}>
             <Typography variant="label" color={colors.primary} align="center" style={{ marginTop: spacing.xs }}>
               {t('challenges.createGroup')}
             </Typography>

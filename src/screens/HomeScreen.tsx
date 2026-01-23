@@ -9,6 +9,7 @@ import { useAuthStore } from '../store/useAuthStore';
 import { useUserStore } from '../store/useUserStore';
 import { useChallengeStore } from '../store/useChallengeStore';
 import { useContentStore } from '../store/useContentStore';
+import { useChurchPostsPreview } from '../features/church/hooks/useChurchPosts';
 import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
 
@@ -17,6 +18,8 @@ export const HomeScreen = () => {
   const { profile } = useUserStore();
   const { challenges, fetchUserChallenges } = useChallengeStore();
   const { featured, fetchContent } = useContentStore();
+  const { data: churchPosts, isLoading: isLoadingPosts, error: postsError } = useChurchPostsPreview(profile?.churchId);
+  
   const { spacing, colors, layout } = useTheme();
   const navigation = useNavigation<any>();
   const { t } = useTranslation();
@@ -33,6 +36,15 @@ export const HomeScreen = () => {
     if (hour < 12) return t('home.goodMorning');
     if (hour < 18) return t('home.goodAfternoon');
     return t('home.goodEvening');
+  };
+
+  const handlePostPress = (postId: string) => {
+    // Navigate to Church tab then to detail
+    navigation.navigate('Church', { screen: 'PostDetail', params: { postId } });
+  };
+
+  const handleViewAllPosts = () => {
+    navigation.navigate('Church');
   };
 
   return (
@@ -138,13 +150,42 @@ export const HomeScreen = () => {
 
         {/* Church Updates Preview */}
         <View>
-           <Typography variant="h3" style={{ marginBottom: spacing.md }}>{t('home.fromYourChurch')}</Typography>
+           <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: spacing.md }}>
+             <Typography variant="h3">{t('home.fromYourChurch')}</Typography>
+             {profile?.churchId && (
+               <TouchableOpacity onPress={handleViewAllPosts}>
+                 <Typography variant="caption" color={colors.primary}>{t('common.viewAll')}</Typography>
+               </TouchableOpacity>
+             )}
+           </View>
+
            {profile?.churchId ? (
-             <Card>
-               <Typography variant="body" color={colors.textSecondary} style={{ fontStyle: 'italic' }}>
-                 {t('home.noChurchUpdates')}
-               </Typography>
-             </Card>
+             churchPosts && churchPosts.length > 0 ? (
+               churchPosts.map((post) => (
+                 <Card key={post.id} style={{ marginBottom: spacing.md }} onPress={() => handlePostPress(post.id)}>
+                   <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: spacing.sm }}>
+                     <View style={{ width: 32, height: 32, borderRadius: 16, backgroundColor: colors.primary, justifyContent: 'center', alignItems: 'center', marginRight: spacing.sm }}>
+                       <Ionicons name="megaphone" size={16} color={colors.surface} />
+                     </View>
+                     <View>
+                       <Typography variant="h3" style={{ fontSize: 16 }}>{post.title}</Typography>
+                       <Typography variant="caption" color={colors.textSecondary}>
+                         {new Date(post.published_at).toLocaleDateString()}
+                       </Typography>
+                     </View>
+                   </View>
+                   <Typography variant="body" numberOfLines={2}>
+                     {post.excerpt || post.title}
+                   </Typography>
+                 </Card>
+               ))
+             ) : (
+               <Card>
+                 <Typography variant="body" color={colors.textSecondary} style={{ fontStyle: 'italic' }}>
+                   {t('home.noChurchUpdates')}
+                 </Typography>
+               </Card>
+             )
            ) : (
              <Card onPress={() => navigation.navigate('Profile', { screen: 'EditChurch', params: { isEditing: true } })}>
                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
