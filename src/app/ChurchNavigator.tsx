@@ -3,6 +3,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { ChurchScreen } from '../screens/ChurchScreen';
 import { OnboardingChurchScreen } from '../features/onboarding/OnboardingChurchScreen';
 import { PostDetailScreen } from '../features/church/PostDetailScreen';
+import { WebViewScreen } from '../features/church/WebViewScreen';
 import { useTranslation } from 'react-i18next';
 
 const Stack = createNativeStackNavigator();
@@ -26,6 +27,11 @@ export const ChurchNavigator = () => {
         name="PostDetail" 
         component={PostDetailScreen} 
         options={{ title: 'Post' }} 
+      />
+      <Stack.Screen 
+        name="WebView" 
+        component={WebViewScreen} 
+        options={{ title: 'Browser' }} 
       />
     </Stack.Navigator>
   );

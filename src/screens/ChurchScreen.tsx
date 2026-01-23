@@ -9,6 +9,7 @@ import { useTheme } from '../theme';
 import { useUserStore } from '../store/useUserStore';
 import { churchService, Church } from '../services/churchService';
 import { useChurchPostsList } from '../features/church/hooks/useChurchPosts';
+import { QuickActionsGrid } from '../features/church/components/QuickActionsGrid';
 import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
 
@@ -132,20 +133,7 @@ export const ChurchScreen = () => {
         </View>
 
         {/* Quick Actions */}
-        <View style={{ flexDirection: 'row', gap: spacing.md, marginBottom: spacing.xl }}>
-          <Button 
-            title={t('church.give')} 
-            variant="outline" 
-            style={{ flex: 1 }} 
-            onPress={handleGive}
-          />
-          <Button 
-            title={t('church.events')} 
-            variant="outline" 
-            style={{ flex: 1 }}
-            onPress={handleEvents}
-          />
-        </View>
+        <QuickActionsGrid churchId={profile?.churchId} />
 
         <Typography variant="h3" style={{ marginBottom: spacing.md }}>{t('church.latestUpdates')}</Typography>
       </View>
