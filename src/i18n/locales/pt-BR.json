@@ -10,6 +10,10 @@
     "days": "Dias",
     "viewAll": "Ver Todos",
     "continue": "Continuar",
+    "saveChanges": "Salvar Alterações",
+    "skip": "Pular por enquanto",
+    "learnMore": "Saiba Mais",
+    "unknownUser": "Usuário Desconhecido",
     "start": "Iniciar"
   },
   "auth": {
@@ -67,6 +71,10 @@
     "createGroup": "Criar um Grupo",
     "selectionRequired": "Seleção Necessária",
     "selectGroupError": "Por favor, selecione um grupo para criar um desafio.",
+    "myChallenges": "Meus Desafios",
+    "ends": "Termina em",
+    "noActiveChallenges": "Nenhum desafio ativo.",
+    "challenge": "Desafio",
     "invite": "Convidar",
     "inviteMessage": "Participe do meu desafio \"{{title}}\" no Seedfy: {{link}}",
     "participantsToday": "Participantes completaram hoje",
@@ -95,7 +103,12 @@
     "events": "Eventos",
     "latestUpdates": "Últimas Atualizações",
     "noUpdates": "Nenhuma atualização recente.",
-    "changeChurch": "Mudar Igreja"
+    "changeChurch": "Mudar Igreja",
+    "updateTitle": "Atualize sua Igreja",
+    "findTitle": "Encontre sua Igreja",
+    "updateSubtitle": "Mude sua conexão com a comunidade local.",
+    "findSubtitle": "Conecte-se com sua comunidade local.",
+    "fixed": "Fixado"
   },
   "navigation": {
     "home": "Início",

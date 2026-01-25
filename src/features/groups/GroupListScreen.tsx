@@ -9,12 +9,14 @@ import { useTheme } from '../../theme';
 import { useGroupStore } from '../../store/useGroupStore';
 import { useAuthStore } from '../../store/useAuthStore';
 import { Ionicons } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
 
 export const GroupListScreen = () => {
   const { groups, isLoading, fetchUserGroups } = useGroupStore();
   const user = useAuthStore(state => state.user);
   const { spacing, colors } = useTheme();
   const navigation = useNavigation<any>();
+  const { t } = useTranslation();
 
   useEffect(() => {
     if (user) {
@@ -25,7 +27,7 @@ export const GroupListScreen = () => {
   return (
     <Screen style={{ padding: spacing.lg }}>
       <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: spacing.lg }}>
-        <Typography variant="h2">My Groups</Typography>
+        <Typography variant="h2">{t('profile.myGroups')}</Typography>
         <TouchableOpacity onPress={() => navigation.navigate('CreateGroup')}>
           <Ionicons name="add-circle" size={32} color={colors.primary} />
         </TouchableOpacity>
@@ -41,17 +43,17 @@ export const GroupListScreen = () => {
           >
             <Typography variant="h3">{item.name}</Typography>
             <Typography variant="caption" color={colors.textSecondary}>
-              Created {new Date(item.createdAt).toLocaleDateString()}
+              {t('groups.created')} {new Date(item.createdAt).toLocaleDateString()}
             </Typography>
           </Card>
         )}
         ListEmptyComponent={
           <View style={{ alignItems: 'center', marginTop: spacing.xl }}>
             <Typography variant="body" color={colors.textSecondary}>
-              You haven't joined any groups yet.
+              {t('groups.noGroupsJoined')}
             </Typography>
             <Button 
-              title="Create a Group" 
+              title={t('groups.create')}
               onPress={() => navigation.navigate('CreateGroup')}
               variant="ghost"
               style={{ marginTop: spacing.md }}

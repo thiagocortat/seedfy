@@ -1,4 +1,22 @@
 {
+  "groups": {
+    "create": "Create New Group",
+    "createNew": "Create New Group",
+    "name": "Group Name",
+    "placeholderName": "e.g. Morning Prayer Warriors",
+    "createAction": "Create Group",
+    "enterNameError": "Please enter a group name",
+    "created": "Created",
+    "noGroupsJoined": "You haven't joined any groups yet.",
+    "activityFeed": "Activity Feed",
+    "members": "Members",
+    "owner": "OWNER",
+    "joined": "Joined",
+    "noActivity": "No activity yet.",
+    "noMembers": "No members found.",
+    "invite": "Invite",
+    "inviteMessage": "Join my group \"{{name}}\" on Seedfy: {{link}}"
+  },
   "common": {
     "error": "Error",
     "loading": "Loading...",
@@ -67,6 +85,10 @@
     "createGroup": "Create a Group",
     "selectionRequired": "Selection Required",
     "selectGroupError": "Please select a group to create a challenge.",
+    "myChallenges": "My Challenges",
+    "ends": "Ends",
+    "noActiveChallenges": "No active challenges.",
+    "challenge": "Challenge",
     "invite": "Invite",
     "inviteMessage": "Join my challenge \"{{title}}\" on Seedfy: {{link}}",
     "participantsToday": "Participants completed today",
@@ -95,7 +117,12 @@
     "events": "Events",
     "latestUpdates": "Latest Updates",
     "noUpdates": "No recent updates.",
-    "changeChurch": "Change Church"
+    "changeChurch": "Change Church",
+    "updateTitle": "Update your Church",
+    "findTitle": "Find your Church",
+    "updateSubtitle": "Change your local community connection.",
+    "findSubtitle": "Connect with your local community.",
+    "fixed": "Fixed"
   },
   "navigation": {
     "home": "Home",

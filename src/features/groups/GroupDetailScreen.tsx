@@ -9,6 +9,7 @@ import { useTheme } from '../../theme';
 import { useGroupStore } from '../../store/useGroupStore';
 import { Ionicons } from '@expo/vector-icons';
 import * as Linking from 'expo-linking';
+import { useTranslation } from 'react-i18next';
 
 export const GroupDetailScreen = () => {
   const { groups, activity, members, fetchGroupActivity, fetchGroupMembers } = useGroupStore();
@@ -16,6 +17,7 @@ export const GroupDetailScreen = () => {
   const route = useRoute<any>();
   const { groupId } = route.params;
   const [activeTab, setActiveTab] = useState<'feed' | 'members'>('feed');
+  const { t } = useTranslation();
 
   const group = groups.find(g => g.id === groupId);
 
@@ -31,7 +33,7 @@ export const GroupDetailScreen = () => {
   const handleInvite = async () => {
     const link = Linking.createURL(`invite/group/${groupId}`);
     await Share.share({
-      message: `Join my group "${group?.name}" on Seedfy: ${link}`,
+      message: t('groups.inviteMessage', { name: group?.name, link }),
     });
   };
 
@@ -81,7 +83,7 @@ export const GroupDetailScreen = () => {
         <View style={{ flex: 1 }}>
           <View style={{ flexDirection: 'row', alignItems: 'center' }}>
             <Typography variant="body" style={{ fontWeight: 'bold', marginRight: spacing.sm }}>
-              {item.name || 'Unknown User'}
+              {item.name || t('common.unknownUser')}
             </Typography>
             {item.role === 'owner' && (
               <View 
@@ -93,13 +95,13 @@ export const GroupDetailScreen = () => {
                 }}
               >
                 <Typography variant="caption" style={{ color: colors.surface, fontSize: 10 }}>
-                  OWNER
+                  {t('groups.owner')}
                 </Typography>
               </View>
             )}
           </View>
           <Typography variant="caption" color={colors.textSecondary}>
-            Joined {new Date(item.joinedAt).toLocaleDateString()}
+            {t('groups.joined')} {new Date(item.joinedAt).toLocaleDateString()}
           </Typography>
         </View>
       </View>
@@ -110,12 +112,12 @@ export const GroupDetailScreen = () => {
     <Screen style={{ padding: spacing.lg }}>
       <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: spacing.md }}>
         <Typography variant="h1">{group.name}</Typography>
-        <Button title="Invite" onPress={handleInvite} variant="outline" style={{ minHeight: 36, paddingVertical: 4, paddingHorizontal: 12 }} />
+        <Button title={t('groups.invite')} onPress={handleInvite} variant="outline" style={{ minHeight: 36, paddingVertical: 4, paddingHorizontal: 12 }} />
       </View>
 
       <View style={{ flexDirection: 'row', marginBottom: spacing.md }}>
-        {renderTab('feed', 'Activity Feed')}
-        {renderTab('members', 'Members')}
+        {renderTab('feed', t('groups.activityFeed'))}
+        {renderTab('members', t('groups.members'))}
       </View>
       
       {activeTab === 'feed' ? (
@@ -142,7 +144,7 @@ export const GroupDetailScreen = () => {
           )}
           ListEmptyComponent={
             <Typography variant="body" color={colors.textSecondary} style={{ textAlign: 'center', marginTop: spacing.lg }}>
-              No activity yet.
+              {t('groups.noActivity')}
             </Typography>
           }
         />
@@ -153,7 +155,7 @@ export const GroupDetailScreen = () => {
           renderItem={renderMember}
           ListEmptyComponent={
             <Typography variant="body" color={colors.textSecondary} style={{ textAlign: 'center', marginTop: spacing.lg }}>
-              No members found.
+              {t('groups.noMembers')}
             </Typography>
           }
         />

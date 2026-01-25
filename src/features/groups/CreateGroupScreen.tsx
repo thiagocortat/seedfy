@@ -8,6 +8,7 @@ import { Button } from '../../components/Button';
 import { useTheme } from '../../theme';
 import { useGroupStore } from '../../store/useGroupStore';
 import { useAuthStore } from '../../store/useAuthStore';
+import { useTranslation } from 'react-i18next';
 
 export const CreateGroupScreen = () => {
   const [name, setName] = useState('');
@@ -17,10 +18,11 @@ export const CreateGroupScreen = () => {
   const navigation = useNavigation<any>();
   const user = useAuthStore(state => state.user);
   const createGroup = useGroupStore(state => state.createGroup);
+  const { t } = useTranslation();
 
   const handleCreate = async () => {
     if (!name.trim()) {
-      Alert.alert('Error', 'Please enter a group name');
+      Alert.alert(t('common.error'), t('groups.enterNameError'));
       return;
     }
     
@@ -31,7 +33,7 @@ export const CreateGroupScreen = () => {
       await createGroup(user.id, name);
       navigation.goBack();
     } catch (error: any) {
-      Alert.alert('Error', error.message);
+      Alert.alert(t('common.error'), error.message);
     } finally {
       setLoading(false);
     }
@@ -40,12 +42,12 @@ export const CreateGroupScreen = () => {
   return (
     <Screen style={{ padding: spacing.lg }}>
       <Typography variant="h2" style={{ marginBottom: spacing.lg }}>
-        Create New Group
+        {t('groups.createNew')}
       </Typography>
 
       <Input
-        label="Group Name"
-        placeholder="e.g. Morning Prayer Warriors"
+        label={t('groups.name')}
+        placeholder={t('groups.placeholderName')}
         value={name}
         onChangeText={setName}
         autoCapitalize="words"
@@ -53,14 +55,14 @@ export const CreateGroupScreen = () => {
       />
 
       <Button
-        title="Create Group"
+        title={t('groups.createAction')}
         onPress={handleCreate}
         loading={loading}
         style={{ marginBottom: spacing.md }}
       />
       
       <Button
-        title="Cancel"
+        title={t('common.cancel')}
         onPress={() => navigation.goBack()}
         variant="ghost"
         disabled={loading}
