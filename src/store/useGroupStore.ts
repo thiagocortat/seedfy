@@ -1,14 +1,16 @@
 import { create } from 'zustand';
-import { groupService, Group, GroupActivity } from '../services/groupService';
+import { groupService, Group, GroupActivity, GroupMemberProfile } from '../services/groupService';
 
 interface GroupState {
   groups: Group[];
   activeGroup: Group | null;
   activity: GroupActivity[];
+  members: GroupMemberProfile[];
   isLoading: boolean;
   fetchUserGroups: (userId: string) => Promise<void>;
   createGroup: (userId: string, name: string) => Promise<void>;
   fetchGroupActivity: (groupId: string) => Promise<void>;
+  fetchGroupMembers: (groupId: string) => Promise<void>;
   setActiveGroup: (group: Group | null) => void;
 }
 
@@ -16,6 +18,7 @@ export const useGroupStore = create<GroupState>((set, get) => ({
   groups: [],
   activeGroup: null,
   activity: [],
+  members: [],
   isLoading: false,
   fetchUserGroups: async (userId: string) => {
     set({ isLoading: true });
@@ -46,6 +49,14 @@ export const useGroupStore = create<GroupState>((set, get) => ({
       set({ activity });
     } catch (error) {
       console.error('Error fetching activity:', error);
+    }
+  },
+  fetchGroupMembers: async (groupId: string) => {
+    try {
+      const members = await groupService.getGroupMembers(groupId);
+      set({ members });
+    } catch (error) {
+      console.error('Error fetching members:', error);
     }
   },
   setActiveGroup: (group) => set({ activeGroup: group }),

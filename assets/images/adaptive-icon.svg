@@ -1,0 +1,13 @@
+
+<svg width="1024" height="1024" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
+  <!-- Fundo Transparente para Adaptive Icon -->
+  <g transform="translate(512, 512) scale(0.8)">
+    <path d="M0,-300 C165,-300 300,-165 300,0 C300,165 165,300 0,300 C-165,300 -300,165 -300,0 C-300,-165 -165,-300 0,-300 Z" fill="none" stroke="#D4AF37" stroke-width="40"/>
+    <!-- Trindade Simplificada -->
+    <circle cx="0" cy="-150" r="100" fill="#D4AF37"/>
+    <circle cx="130" cy="75" r="100" fill="#D4AF37"/>
+    <circle cx="-130" cy="75" r="100" fill="#D4AF37"/>
+    <!-- Conexão Central -->
+    <circle cx="0" cy="0" r="60" fill="#D4AF37"/>
+  </g>
+</svg>

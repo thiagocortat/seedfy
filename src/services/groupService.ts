@@ -15,6 +15,14 @@ export interface GroupMember {
   joinedAt: string;
 }
 
+export interface GroupMemberProfile {
+  userId: string;
+  role: 'owner' | 'member';
+  joinedAt: string;
+  name: string;
+  photoUrl: string | null;
+}
+
 export interface GroupActivity {
   id: string;
   groupId: string;
@@ -122,6 +130,27 @@ export const groupService = {
       type: activity.type,
       message: activity.message,
       createdAt: activity.created_at,
+    }));
+  },
+
+  async getGroupMembers(groupId: string): Promise<GroupMemberProfile[]> {
+    const { data, error } = await supabase.rpc('get_group_members', {
+      p_group_id: groupId,
+    });
+
+    if (error) {
+      console.error('Error fetching group members:', error);
+      throw error;
+    }
+
+    if (!data) return [];
+
+    return data.map((member: any) => ({
+      userId: member.member_user_id,
+      role: member.member_role,
+      joinedAt: member.member_joined_at,
+      name: member.member_name,
+      photoUrl: member.member_photo_url,
     }));
   }
 };

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { HomeScreen } from '../screens/HomeScreen';
 import { ChallengesNavigator } from './ChallengesNavigator';
@@ -8,12 +8,29 @@ import { ProfileNavigator } from './ProfileNavigator';
 import { useTheme } from '../theme';
 import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
+import { notificationService } from '../services/notificationService';
+import { userService } from '../services/userService';
+import { useAuthStore } from '../store/useAuthStore';
 
 const Tab = createBottomTabNavigator();
 
 export const MainTabNavigator = () => {
   const { colors, typography } = useTheme();
   const { t } = useTranslation();
+  const { user } = useAuthStore();
+
+  useEffect(() => {
+    const registerPushToken = async () => {
+      if (user) {
+        const token = await notificationService.registerForPushNotificationsAsync();
+        if (token) {
+          await userService.updateUser(user.id, { pushToken: token });
+        }
+      }
+    };
+
+    registerPushToken();
+  }, [user]);
 
   return (
     <Tab.Navigator
