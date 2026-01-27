@@ -10,6 +10,7 @@ interface Props {
   loading?: boolean;
   disabled?: boolean;
   style?: ViewStyle;
+  textColor?: string;
 }
 
 export const Button: React.FC<Props> = ({ 
@@ -18,7 +19,8 @@ export const Button: React.FC<Props> = ({
   variant = 'primary', 
   loading = false, 
   disabled = false,
-  style 
+  style,
+  textColor
 }) => {
   const { colors, spacing, layout } = useTheme();
 
@@ -34,6 +36,7 @@ export const Button: React.FC<Props> = ({
   };
 
   const getTextColor = () => {
+    if (textColor) return textColor;
     if (disabled) return colors.surface;
     switch (variant) {
       case 'primary': return colors.surface;

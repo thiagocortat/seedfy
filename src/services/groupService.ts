@@ -31,7 +31,105 @@ export interface GroupActivity {
   createdAt: string;
 }
 
+export interface GroupInvitation {
+  id: string;
+  groupId: string;
+  groupName?: string;
+  inviterName?: string;
+  status: 'pending' | 'accepted' | 'declined' | 'revoked';
+  createdAt: string;
+}
+
+export interface UserSearchResult {
+  id: string;
+  displayName: string;
+  avatarUrl: string | null;
+}
+
 export const groupService = {
+  async searchUserByEmail(email: string): Promise<UserSearchResult | null> {
+    const { data, error } = await supabase.rpc('search_user_by_email', {
+      search_email: email,
+    });
+
+    if (error) {
+      console.error('Error searching user:', error);
+      throw error;
+    }
+
+    if (!data || data.length === 0) return null;
+
+    return {
+      id: data[0].id,
+      displayName: data[0].display_name,
+      avatarUrl: data[0].avatar_url,
+    };
+  },
+
+  async inviteUser(groupId: string, userId: string): Promise<void> {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) throw new Error('User not authenticated');
+
+    const { error } = await supabase.from('group_invitations').insert({
+      group_id: groupId,
+      invited_user_id: userId,
+      inviter_user_id: user.id,
+      status: 'pending',
+    });
+
+    if (error) {
+      console.error('Error inviting user:', error);
+      throw error;
+    }
+  },
+
+  async getMyInvitations(): Promise<GroupInvitation[]> {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return [];
+
+    const { data, error } = await supabase
+      .from('group_invitations')
+      .select(`
+        id,
+        status,
+        created_at,
+        group:groups(id, name),
+        inviter:users!inviter_user_id(name)
+      `)
+      .eq('invited_user_id', user.id)
+      .eq('status', 'pending')
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      console.error('Error fetching invitations:', error);
+      throw error;
+    }
+
+    return data.map((invite: any) => ({
+      id: invite.id,
+      groupId: invite.group?.id,
+      groupName: invite.group?.name,
+      inviterName: invite.inviter?.name,
+      status: invite.status,
+      createdAt: invite.created_at,
+    }));
+  },
+
+  async respondToInvite(inviteId: string, accept: boolean): Promise<void> {
+    if (accept) {
+      const { error } = await supabase.rpc('accept_group_invitation', {
+        p_invite_id: inviteId,
+      });
+      if (error) throw error;
+    } else {
+      const { error } = await supabase
+        .from('group_invitations')
+        .update({ status: 'declined', responded_at: new Date().toISOString() })
+        .eq('id', inviteId);
+      if (error) throw error;
+    }
+  },
+
   async createGroup(userId: string, name: string, imageUrl?: string): Promise<Group> {
     const groupData = {
       name,

@@ -7,19 +7,23 @@ import { Button } from '../../components/Button';
 import { Card } from '../../components/Card';
 import { useTheme } from '../../theme';
 import { useGroupStore } from '../../store/useGroupStore';
+import { useAuthStore } from '../../store/useAuthStore';
 import { Ionicons } from '@expo/vector-icons';
 import * as Linking from 'expo-linking';
 import { useTranslation } from 'react-i18next';
 
 export const GroupDetailScreen = () => {
   const { groups, activity, members, fetchGroupActivity, fetchGroupMembers } = useGroupStore();
+  const { user } = useAuthStore();
   const { spacing, colors } = useTheme();
   const route = useRoute<any>();
+  const navigation = useNavigation<any>();
   const { groupId } = route.params;
   const [activeTab, setActiveTab] = useState<'feed' | 'members'>('feed');
   const { t } = useTranslation();
 
   const group = groups.find(g => g.id === groupId);
+  const isOwner = group?.createdBy === user?.id;
 
   useEffect(() => {
     if (groupId) {
@@ -51,7 +55,7 @@ export const GroupDetailScreen = () => {
       }}
     >
       <Typography 
-        variant="h4" 
+        variant="h3" 
         color={activeTab === key ? colors.primary : colors.textSecondary}
       >
         {label}
@@ -149,16 +153,26 @@ export const GroupDetailScreen = () => {
           }
         />
       ) : (
-        <FlatList
-          data={members}
-          keyExtractor={item => item.userId}
-          renderItem={renderMember}
-          ListEmptyComponent={
-            <Typography variant="body" color={colors.textSecondary} style={{ textAlign: 'center', marginTop: spacing.lg }}>
-              {t('groups.noMembers')}
-            </Typography>
-          }
-        />
+        <View style={{ flex: 1 }}>
+          {isOwner && (
+            <Button
+              title={t('groups.inviteMember', 'Invite Member')}
+              onPress={() => navigation.navigate('GroupInvite', { groupId })}
+              style={{ marginBottom: spacing.md }}
+              variant="outline"
+            />
+          )}
+          <FlatList
+            data={members}
+            keyExtractor={item => item.userId}
+            renderItem={renderMember}
+            ListEmptyComponent={
+              <Typography variant="body" color={colors.textSecondary} style={{ textAlign: 'center', marginTop: spacing.lg }}>
+                {t('groups.noMembers')}
+              </Typography>
+            }
+          />
+        </View>
       )}
     </Screen>
   );

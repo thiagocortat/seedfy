@@ -14,7 +14,8 @@
     "skip": "Pular por enquanto",
     "learnMore": "Saiba Mais",
     "unknownUser": "Usuário Desconhecido",
-    "start": "Iniciar"
+    "start": "Iniciar",
+    "search": "Buscar"
   },
   "auth": {
     "welcomeBack": "Bem-vindo de volta",
@@ -36,7 +37,39 @@
     "resetPasswordSubtitle": "Digite seu email para receber um link de redefinição",
     "sendResetLink": "Enviar Link",
     "resetPasswordEmailSent": "Verifique seu email para redefinir a senha",
-    "success": "Sucesso"
+    "success": "Sucesso",
+    "acceptedMessage": "Convite aceito!"
+  },
+  "groups": {
+    "title": "Grupos",
+    "create": "Criar Grupo",
+    "detail": "Detalhes do Grupo",
+    "inviteMember": "Convidar Membro",
+    "inviteDescription": "Busque um usuário pelo e-mail exato para convidá-lo para o grupo.",
+    "sendInvite": "Enviar Convite",
+    "owner": "Líder",
+    "member": "Membro",
+    "joined": "Entrou em",
+    "activityFeed": "Atividades",
+    "members": "Membros",
+    "noActivity": "Nenhuma atividade recente.",
+    "noMembers": "Nenhum membro neste grupo.",
+    "invite": "Convidar",
+    "created": "Criado em",
+    "noGroupsJoined": "Você não participa de nenhum grupo.",
+    "inviteMessage": "Junte-se ao meu grupo \"{{name}}\" no Seedfy: {{link}}"
+  },
+  "invitations": {
+    "title": "Convites de Grupo",
+    "invitedBy": "Convidado por",
+    "acceptedMessage": "Convite aceito!",
+    "declinedMessage": "Convite recusado.",
+    "sentMessage": "Convite enviado com sucesso",
+    "actionError": "Falha ao processar convite.",
+    "duplicate": "Convite já pendente ou usuário já é membro",
+    "sendError": "Falha ao enviar convite",
+    "empty": "Nenhum convite pendente",
+    "userNotFound": "Usuário não encontrado"
   },
   "home": {
     "goodMorning": "Bom Dia",
