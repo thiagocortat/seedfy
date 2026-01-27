@@ -31,6 +31,12 @@ export const GroupListScreen = () => {
         <Typography variant="h2">{t('profile.myGroups')}</Typography>
         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
           <TouchableOpacity 
+            onPress={() => navigation.navigate('ExploreGroups')} 
+            style={{ marginRight: spacing.md }}
+          >
+            <Ionicons name="search" size={28} color={colors.primary} />
+          </TouchableOpacity>
+          <TouchableOpacity 
             onPress={() => navigation.navigate('Invitations')} 
             style={{ marginRight: spacing.md }}
           >

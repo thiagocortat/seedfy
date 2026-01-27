@@ -6,6 +6,8 @@ export interface Group {
   imageUrl?: string;
   createdBy: string;
   createdAt: string;
+  discoverable: boolean;
+  joinPolicy: 'request_to_join' | 'invite_only';
 }
 
 export interface GroupMember {
@@ -44,6 +46,17 @@ export interface UserSearchResult {
   id: string;
   displayName: string;
   avatarUrl: string | null;
+}
+
+export interface GroupJoinRequest {
+  id: string;
+  groupId: string;
+  groupName?: string;
+  requesterUserId: string;
+  requesterName?: string;
+  requesterPhotoUrl?: string;
+  status: 'pending' | 'approved' | 'denied' | 'canceled';
+  createdAt: string;
 }
 
 export const groupService = {
@@ -130,12 +143,20 @@ export const groupService = {
     }
   },
 
-  async createGroup(userId: string, name: string, imageUrl?: string): Promise<Group> {
+  async createGroup(
+    userId: string, 
+    name: string, 
+    imageUrl?: string,
+    discoverable: boolean = false,
+    joinPolicy: 'request_to_join' | 'invite_only' = 'invite_only'
+  ): Promise<Group> {
     const groupData = {
       name,
       image_url: imageUrl,
       created_by: userId,
       created_at: new Date().toISOString(),
+      discoverable,
+      join_policy: joinPolicy,
     };
 
     // 1. Create Group
@@ -181,7 +202,27 @@ export const groupService = {
       imageUrl: group.image_url,
       createdBy: group.created_by,
       createdAt: group.created_at,
+      discoverable: group.discoverable,
+      joinPolicy: group.join_policy,
     };
+  },
+
+  async updateGroup(groupId: string, updates: Partial<Group>): Promise<void> {
+    const dbUpdates: any = {};
+    if (updates.name !== undefined) dbUpdates.name = updates.name;
+    if (updates.imageUrl !== undefined) dbUpdates.image_url = updates.imageUrl;
+    if (updates.discoverable !== undefined) dbUpdates.discoverable = updates.discoverable;
+    if (updates.joinPolicy !== undefined) dbUpdates.join_policy = updates.joinPolicy;
+
+    const { error } = await supabase
+      .from('groups')
+      .update(dbUpdates)
+      .eq('id', groupId);
+
+    if (error) {
+      console.error('Error updating group:', error);
+      throw error;
+    }
   },
 
   async getUserGroups(userId: string): Promise<Group[]> {
@@ -209,6 +250,8 @@ export const groupService = {
       imageUrl: group.image_url,
       createdBy: group.created_by,
       createdAt: group.created_at,
+      discoverable: group.discoverable,
+      joinPolicy: group.join_policy,
     }));
   },
 
@@ -250,5 +293,134 @@ export const groupService = {
       name: member.member_name,
       photoUrl: member.member_photo_url,
     }));
+  },
+
+  // --- Feature 2: Discovery & Requests ---
+
+  async searchGroups(query: string): Promise<Group[]> {
+    const { data, error } = await supabase
+      .from('groups')
+      .select('*')
+      .eq('discoverable', true)
+      .eq('join_policy', 'request_to_join')
+      .ilike('name', `%${query}%`)
+      .limit(20);
+
+    if (error) {
+      console.error('Error searching groups:', error);
+      throw error;
+    }
+
+    return (data || []).map(group => ({
+      id: group.id,
+      name: group.name,
+      imageUrl: group.image_url,
+      createdBy: group.created_by,
+      createdAt: group.created_at,
+      discoverable: group.discoverable,
+      joinPolicy: group.join_policy,
+    }));
+  },
+
+  async requestToJoinGroup(groupId: string): Promise<void> {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) throw new Error('User not authenticated');
+
+    const { error } = await supabase.from('group_join_requests').insert({
+      group_id: groupId,
+      requester_user_id: user.id,
+      status: 'pending',
+    });
+
+    if (error) {
+      console.error('Error requesting to join group:', error);
+      throw error;
+    }
+  },
+
+  async getMyJoinRequests(): Promise<GroupJoinRequest[]> {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return [];
+
+    const { data, error } = await supabase
+      .from('group_join_requests')
+      .select(`
+        id,
+        group_id,
+        status,
+        created_at,
+        group:groups(name)
+      `)
+      .eq('requester_user_id', user.id)
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      console.error('Error fetching my join requests:', error);
+      throw error;
+    }
+
+    return (data || []).map((req: any) => ({
+      id: req.id,
+      groupId: req.group_id,
+      groupName: req.group?.name,
+      requesterUserId: user.id,
+      status: req.status,
+      createdAt: req.created_at,
+    }));
+  },
+
+  async cancelJoinRequest(requestId: string): Promise<void> {
+    const { error } = await supabase
+      .from('group_join_requests')
+      .update({ status: 'canceled' })
+      .eq('id', requestId);
+
+    if (error) {
+      console.error('Error canceling join request:', error);
+      throw error;
+    }
+  },
+
+  async getGroupJoinRequests(groupId: string): Promise<GroupJoinRequest[]> {
+    const { data, error } = await supabase
+      .from('group_join_requests')
+      .select(`
+        id,
+        group_id,
+        requester_user_id,
+        status,
+        created_at,
+        requester:users!group_join_requests_requester_user_id_fkey(name, photo_url)
+      `)
+      .eq('group_id', groupId)
+      .eq('status', 'pending')
+      .order('created_at', { ascending: true });
+
+    if (error) {
+      console.error('Error fetching group join requests:', error);
+      throw error;
+    }
+
+    return (data || []).map((req: any) => ({
+      id: req.id,
+      groupId: req.group_id,
+      requesterUserId: req.requester_user_id,
+      requesterName: req.requester?.name,
+      requesterPhotoUrl: req.requester?.photo_url,
+      status: req.status,
+      createdAt: req.created_at,
+    }));
+  },
+
+  async resolveJoinRequest(requestId: string, action: 'approved' | 'denied'): Promise<void> {
+    const { error } = await supabase.rpc('resolve_join_request', {
+      request_id: requestId,
+      action: action,
+    });
+
+    if (error) {
+      console.error(`Error resolving request (${action}):`, error);
+      throw error;
+    }
   }
 };

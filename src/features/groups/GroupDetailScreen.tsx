@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, FlatList, Share, Image, TouchableOpacity } from 'react-native';
+import { View, FlatList, Share, Image, TouchableOpacity, Alert } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { Screen } from '../../components/Screen';
 import { Typography } from '../../components/Typography';
@@ -13,7 +13,16 @@ import * as Linking from 'expo-linking';
 import { useTranslation } from 'react-i18next';
 
 export const GroupDetailScreen = () => {
-  const { groups, activity, members, fetchGroupActivity, fetchGroupMembers } = useGroupStore();
+  const { 
+    groups, 
+    activity, 
+    members, 
+    fetchGroupActivity, 
+    fetchGroupMembers,
+    pendingJoinRequests,
+    fetchGroupJoinRequests,
+    resolveJoinRequest
+  } = useGroupStore();
   const { user } = useAuthStore();
   const { spacing, colors } = useTheme();
   const route = useRoute<any>();
@@ -30,15 +39,33 @@ export const GroupDetailScreen = () => {
       fetchGroupActivity(groupId);
       if (activeTab === 'members') {
         fetchGroupMembers(groupId);
+        if (isOwner) {
+          fetchGroupJoinRequests(groupId);
+        }
       }
     }
-  }, [groupId, activeTab]);
+  }, [groupId, activeTab, isOwner]);
 
   const handleInvite = async () => {
     const link = Linking.createURL(`invite/group/${groupId}`);
     await Share.share({
       message: t('groups.inviteMessage', { name: group?.name, link }),
     });
+  };
+
+  const handleResolveRequest = async (requestId: string, action: 'approved' | 'denied') => {
+    try {
+      await resolveJoinRequest(requestId, action);
+      Alert.alert(
+        t('common.success'), 
+        action === 'approved' ? t('groups.requestApproved') : t('groups.requestDenied')
+      );
+      if (action === 'approved') {
+        fetchGroupMembers(groupId); // Refresh members list
+      }
+    } catch (error) {
+      Alert.alert(t('common.error'), t('groups.actionError'));
+    }
   };
 
   if (!group) return null;
@@ -61,6 +88,55 @@ export const GroupDetailScreen = () => {
         {label}
       </Typography>
     </TouchableOpacity>
+  );
+
+  const renderRequest = ({ item }: { item: any }) => (
+    <Card style={{ marginBottom: spacing.sm, padding: spacing.sm, borderColor: colors.secondary, borderWidth: 1 }}>
+      <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: spacing.sm }}>
+        <View 
+          style={{ 
+            width: 40, 
+            height: 40, 
+            borderRadius: 20, 
+            backgroundColor: colors.border, 
+            marginRight: spacing.md,
+            overflow: 'hidden',
+            justifyContent: 'center',
+            alignItems: 'center'
+          }}
+        >
+          {item.requesterPhotoUrl ? (
+            <Image source={{ uri: item.requesterPhotoUrl }} style={{ width: 40, height: 40 }} />
+          ) : (
+            <Ionicons name="person" size={20} color={colors.secondary} />
+          )}
+        </View>
+        <View style={{ flex: 1 }}>
+          <Typography variant="body" style={{ fontWeight: 'bold' }}>
+            {item.requesterName || t('common.unknownUser')}
+          </Typography>
+          <Typography variant="caption" color={colors.textSecondary}>
+            {t('groups.wantsToJoin')} • {new Date(item.createdAt).toLocaleDateString()}
+          </Typography>
+        </View>
+      </View>
+      <View style={{ flexDirection: 'row', gap: spacing.md }}>
+        <Button
+          title={t('common.deny', 'Deny')}
+          onPress={() => handleResolveRequest(item.id, 'denied')}
+          variant="outline"
+          size="small"
+          style={{ flex: 1, borderColor: colors.error }}
+          textColor={colors.error}
+        />
+        <Button
+          title={t('common.approve', 'Approve')}
+          onPress={() => handleResolveRequest(item.id, 'approved')}
+          size="small"
+          style={{ flex: 1 }}
+        />
+      </View>
+    </Card>
   );
 
   const renderMember = ({ item }: { item: any }) => (
@@ -116,7 +192,17 @@ export const GroupDetailScreen = () => {
     <Screen style={{ padding: spacing.lg }}>
       <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: spacing.md }}>
         <Typography variant="h1">{group.name}</Typography>
-        <Button title={t('groups.invite')} onPress={handleInvite} variant="outline" style={{ minHeight: 36, paddingVertical: 4, paddingHorizontal: 12 }} />
+        <View style={{ flexDirection: 'row' }}>
+          {isOwner && (
+            <Button 
+              title={t('common.edit')} 
+              onPress={() => navigation.navigate('EditGroup', { groupId })} 
+              variant="ghost" 
+              style={{ minHeight: 36, paddingVertical: 4, paddingHorizontal: 12, marginRight: spacing.sm }} 
+            />
+          )}
+          <Button title={t('groups.invite')} onPress={handleInvite} variant="outline" style={{ minHeight: 36, paddingVertical: 4, paddingHorizontal: 12 }} />
+        </View>
       </View>
 
       <View style={{ flexDirection: 'row', marginBottom: spacing.md }}>
@@ -153,26 +239,43 @@ export const GroupDetailScreen = () => {
           }
         />
       ) : (
-        <View style={{ flex: 1 }}>
-          {isOwner && (
-            <Button
-              title={t('groups.inviteMember', 'Invite Member')}
-              onPress={() => navigation.navigate('GroupInvite', { groupId })}
-              style={{ marginBottom: spacing.md }}
-              variant="outline"
-            />
-          )}
-          <FlatList
-            data={members}
-            keyExtractor={item => item.userId}
-            renderItem={renderMember}
-            ListEmptyComponent={
-              <Typography variant="body" color={colors.textSecondary} style={{ textAlign: 'center', marginTop: spacing.lg }}>
-                {t('groups.noMembers')}
-              </Typography>
-            }
-          />
-        </View>
+        <FlatList
+          data={members}
+          keyExtractor={item => item.userId}
+          ListHeaderComponent={
+            <>
+              {isOwner && (
+                <View style={{ marginBottom: spacing.lg }}>
+                  <Button
+                    title={t('groups.inviteMember', 'Invite Member')}
+                    onPress={() => navigation.navigate('GroupInvite', { groupId })}
+                    style={{ marginBottom: spacing.md }}
+                    variant="outline"
+                  />
+                  
+                  {pendingJoinRequests.length > 0 && (
+                    <View style={{ marginBottom: spacing.md }}>
+                      <Typography variant="h3" style={{ marginBottom: spacing.sm }}>
+                        {t('groups.pendingRequests', 'Pending Requests')} ({pendingJoinRequests.length})
+                      </Typography>
+                      {pendingJoinRequests.map(req => (
+                        <View key={req.id}>
+                          {renderRequest({ item: req })}
+                        </View>
+                      ))}
+                    </View>
+                  )}
+                </View>
+              )}
+            </>
+          }
+          renderItem={renderMember}
+          ListEmptyComponent={
+            <Typography variant="body" color={colors.textSecondary} style={{ textAlign: 'center', marginTop: spacing.lg }}>
+              {t('groups.noMembers')}
+            </Typography>
+          }
+        />
       )}
     </Screen>
   );

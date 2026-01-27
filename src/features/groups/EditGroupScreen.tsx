@@ -1,39 +1,51 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Alert, Switch, TouchableOpacity } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import { Screen } from '../../components/Screen';
 import { Typography } from '../../components/Typography';
 import { Input } from '../../components/Input';
 import { Button } from '../../components/Button';
 import { useTheme } from '../../theme';
 import { useGroupStore } from '../../store/useGroupStore';
-import { useAuthStore } from '../../store/useAuthStore';
 import { useTranslation } from 'react-i18next';
-import { Ionicons } from '@expo/vector-icons';
 
-export const CreateGroupScreen = () => {
-  const [name, setName] = useState('');
-  const [discoverable, setDiscoverable] = useState(false);
-  const [joinPolicy, setJoinPolicy] = useState<'request_to_join' | 'invite_only'>('invite_only');
+export const EditGroupScreen = () => {
+  const route = useRoute<any>();
+  const navigation = useNavigation<any>();
+  const { groupId } = route.params;
+  const { groups, updateGroup } = useGroupStore();
+  const group = groups.find(g => g.id === groupId);
+  
+  const [name, setName] = useState(group?.name || '');
+  const [discoverable, setDiscoverable] = useState(group?.discoverable || false);
+  const [joinPolicy, setJoinPolicy] = useState<'request_to_join' | 'invite_only'>(group?.joinPolicy || 'invite_only');
   const [loading, setLoading] = useState(false);
   
   const { spacing, colors } = useTheme();
-  const navigation = useNavigation<any>();
-  const user = useAuthStore(state => state.user);
-  const createGroup = useGroupStore(state => state.createGroup);
   const { t } = useTranslation();
 
-  const handleCreate = async () => {
+  useEffect(() => {
+    if (group) {
+      setName(group.name);
+      setDiscoverable(group.discoverable);
+      setJoinPolicy(group.joinPolicy);
+    }
+  }, [group]);
+
+  const handleUpdate = async () => {
     if (!name.trim()) {
       Alert.alert(t('common.error'), t('groups.enterNameError'));
       return;
     }
-    
-    if (!user) return;
 
     setLoading(true);
     try {
-      await createGroup(user.id, name, discoverable, joinPolicy);
+      await updateGroup(groupId, { 
+        name, 
+        discoverable, 
+        joinPolicy 
+      });
+      Alert.alert(t('common.success'), t('groups.updated'));
       navigation.goBack();
     } catch (error: any) {
       Alert.alert(t('common.error'), error.message);
@@ -74,15 +86,16 @@ export const CreateGroupScreen = () => {
     </TouchableOpacity>
   );
 
+  if (!group) return null;
+
   return (
     <Screen style={{ padding: spacing.lg }}>
       <Typography variant="h2" style={{ marginBottom: spacing.lg }}>
-        {t('groups.createNew')}
+        {t('groups.edit')}
       </Typography>
 
       <Input
         label={t('groups.name')}
-        placeholder={t('groups.placeholderName')}
         value={name}
         onChangeText={setName}
         autoCapitalize="words"
@@ -118,18 +131,6 @@ export const CreateGroupScreen = () => {
               t('groups.requestToJoinDesc', 'Admins approve new members')
             )}
             
-            {/* 
-            // MVP Decision: Invite Only groups are not discoverable in this iteration.
-            // If discoverable is true, we force/prefer request_to_join.
-            // But if we want to allow "Discoverable but Invite Only" (e.g. visible but you can't join without invite?), 
-            // PRD says: "Explore lista apenas grupos com discoverable=true e join_policy='request_to_join'"
-            // So if I select Invite Only here while Discoverable is True, it won't show up in search anyway.
-            // Maybe I should hide Invite Only if Discoverable is True, or warn?
-            // PRD 6.5: 
-            // - discoverable=true + request_to_join → aparece no Explore
-            // - discoverable=true + invite_only → não aparece no Explore no MVP
-            */}
-            
             {renderRadio(
               'invite_only', 
               t('groups.inviteOnly', 'Invite Only'), 
@@ -140,8 +141,8 @@ export const CreateGroupScreen = () => {
       </View>
 
       <Button
-        title={t('groups.createAction')}
-        onPress={handleCreate}
+        title={t('common.save')}
+        onPress={handleUpdate}
         loading={loading}
         style={{ marginBottom: spacing.md }}
       />
