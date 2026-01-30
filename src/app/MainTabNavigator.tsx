@@ -1,4 +1,6 @@
 import React, { useEffect } from 'react';
+import { Platform } from 'react-native';
+import * as Haptics from 'expo-haptics';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { HomeScreen } from '../screens/HomeScreen';
 import { ChallengesNavigator } from './ChallengesNavigator';
@@ -32,8 +34,17 @@ export const MainTabNavigator = () => {
     registerPushToken();
   }, [user]);
 
+  const hapticFeedback = () => {
+    if (Platform.OS === 'ios') {
+      Haptics.selectionAsync();
+    }
+  };
+
   return (
     <Tab.Navigator
+      screenListeners={{
+        tabPress: hapticFeedback,
+      }}
       screenOptions={({ route }) => ({
         headerShown: false,
         tabBarStyle: {

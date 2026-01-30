@@ -1,5 +1,6 @@
 import React from 'react';
-import { View, ViewStyle, TouchableOpacity } from 'react-native';
+import { View, ViewStyle, TouchableOpacity, Platform } from 'react-native';
+import * as Haptics from 'expo-haptics';
 import { useTheme } from '../theme';
 
 interface Props {
@@ -20,6 +21,8 @@ export const Card: React.FC<Props> = ({
   const containerStyle: ViewStyle = {
     backgroundColor: colors.surface,
     borderRadius: layout.radius.lg,
+    // @ts-ignore
+    cornerCurve: 'continuous',
     padding: spacing.md,
     ...(variant === 'elevated' ? layout.shadow.sm : {}),
     ...(variant === 'outlined' ? { borderWidth: 1, borderColor: colors.border } : {}),
@@ -27,7 +30,16 @@ export const Card: React.FC<Props> = ({
 
   if (onPress) {
     return (
-      <TouchableOpacity onPress={onPress} style={[containerStyle, style]} activeOpacity={0.8}>
+      <TouchableOpacity 
+        onPress={() => {
+          if (Platform.OS === 'ios') {
+            Haptics.selectionAsync();
+          }
+          onPress();
+        }} 
+        style={[containerStyle, style]} 
+        activeOpacity={0.8}
+      >
         {children}
       </TouchableOpacity>
     );

@@ -1,5 +1,6 @@
 import React from 'react';
-import { View, ViewStyle, SafeAreaView, StatusBar, KeyboardAvoidingView, Platform } from 'react-native';
+import { View, ViewStyle, StatusBar, KeyboardAvoidingView, Platform } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTheme } from '../theme';
 
 interface Props {
@@ -10,10 +11,23 @@ interface Props {
 
 export const Screen: React.FC<Props> = ({ children, style, unsafe }) => {
   const { colors } = useTheme();
-  const Container = unsafe ? View : SafeAreaView;
+  
+  if (unsafe) {
+    return (
+      <View style={{ flex: 1, backgroundColor: colors.background }}>
+        <StatusBar barStyle={colors.background === '#1C1C1E' ? 'light-content' : 'dark-content'} />
+        <KeyboardAvoidingView 
+          behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+          style={[{ flex: 1 }, style]}
+        >
+          {children}
+        </KeyboardAvoidingView>
+      </View>
+    );
+  }
 
   return (
-    <Container style={{ flex: 1, backgroundColor: colors.background }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: colors.background }} edges={['top', 'left', 'right']}>
       <StatusBar barStyle={colors.background === '#1C1C1E' ? 'light-content' : 'dark-content'} />
       <KeyboardAvoidingView 
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
@@ -21,6 +35,6 @@ export const Screen: React.FC<Props> = ({ children, style, unsafe }) => {
       >
         {children}
       </KeyboardAvoidingView>
-    </Container>
+    </SafeAreaView>
   );
 };
