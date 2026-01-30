@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useCallback } from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { supabase } from '../services/supabase';
 import { useUserStore } from '../store/useUserStore';
@@ -7,7 +7,8 @@ import { AuthNavigator } from './AuthNavigator';
 import { MainTabNavigator } from './MainTabNavigator';
 import { OnboardingNavigator } from './OnboardingNavigator';
 import { PlayerScreen } from '../screens/PlayerScreen';
-import { ActivityIndicator, View } from 'react-native';
+import { View } from 'react-native';
+import * as SplashScreen from 'expo-splash-screen';
 import '../i18n'; // Import i18n configuration
 
 const Stack = createNativeStackNavigator();
@@ -18,7 +19,13 @@ export const RootNavigator = () => {
 
   useEffect(() => {
     // Check active session
-    supabase.auth.getSession().then(({ data: { session } }) => {
+    supabase.auth.getSession().then(({ data: { session }, error }) => {
+      if (error) {
+        console.error('Error getting session:', error);
+        setAuthLoading(false);
+        return;
+      }
+      
       setUser(session?.user ?? null);
       if (session?.user) {
         fetchProfile(session.user.id);
@@ -26,6 +33,9 @@ export const RootNavigator = () => {
         clearProfile();
         setAuthLoading(false);
       }
+    }).catch(err => {
+      console.error('Unexpected error getting session:', err);
+      setAuthLoading(false);
     });
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
@@ -41,33 +51,37 @@ export const RootNavigator = () => {
     return () => subscription.unsubscribe();
   }, []);
 
+  const onLayoutRootView = useCallback(async () => {
+    if (!authLoading && !(user && profileLoading)) {
+      await SplashScreen.hideAsync();
+    }
+  }, [authLoading, user, profileLoading]);
+
   if (authLoading || (user && profileLoading)) {
-    return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <ActivityIndicator size="large" />
-      </View>
-    );
+    return null;
   }
 
   return (
-    <Stack.Navigator screenOptions={{ headerShown: false }}>
-      {!user ? (
-        <Stack.Screen name="Auth" component={AuthNavigator} />
-      ) : !profile?.onboardingCompleted ? (
-        <Stack.Screen name="Onboarding" component={OnboardingNavigator} />
-      ) : (
-        <>
-          <Stack.Screen name="Main" component={MainTabNavigator} />
-          <Stack.Screen 
-            name="Player" 
-            component={PlayerScreen} 
-            options={{ 
-              presentation: 'modal',
-              animation: 'slide_from_bottom'
-            }} 
-          />
-        </>
-      )}
-    </Stack.Navigator>
+    <View style={{ flex: 1 }} onLayout={onLayoutRootView}>
+      <Stack.Navigator screenOptions={{ headerShown: false }}>
+        {!user ? (
+          <Stack.Screen name="Auth" component={AuthNavigator} />
+        ) : !profile?.onboardingCompleted ? (
+          <Stack.Screen name="Onboarding" component={OnboardingNavigator} />
+        ) : (
+          <>
+            <Stack.Screen name="Main" component={MainTabNavigator} />
+            <Stack.Screen 
+              name="Player" 
+              component={PlayerScreen} 
+              options={{ 
+                presentation: 'modal',
+                animation: 'slide_from_bottom'
+              }} 
+            />
+          </>
+        )}
+      </Stack.Navigator>
+    </View>
   );
 };

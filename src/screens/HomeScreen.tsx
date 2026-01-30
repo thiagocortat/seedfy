@@ -81,7 +81,13 @@ export const HomeScreen = () => {
               keyExtractor={item => item.id}
               renderItem={({ item }) => (
                 <Card 
-                  onPress={() => navigation.navigate('Challenges', { screen: 'ChallengeDetail', params: { challengeId: item.id } })}
+                  onPress={() => {
+                    if (item.journeyId) {
+                      navigation.navigate('Challenges', { screen: 'ChallengeJourney', params: { challenge: item } });
+                    } else {
+                      navigation.navigate('Challenges', { screen: 'ChallengeDetail', params: { challengeId: item.id } });
+                    }
+                  }}
                   style={{ width: 260, marginRight: spacing.md, height: 160, justifyContent: 'space-between' }}
                 >
                   <View>

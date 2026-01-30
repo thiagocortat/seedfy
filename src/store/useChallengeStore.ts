@@ -5,7 +5,7 @@ interface ChallengeState {
   challenges: Challenge[];
   isLoading: boolean;
   fetchUserChallenges: (userId: string) => Promise<void>;
-  createChallenge: (userId: string, groupId: string, type: any, title: string, duration: number, startDate: Date) => Promise<void>;
+  createChallenge: (userId: string, groupId: string, type: any, title: string, duration: number, startDate: Date, journeyId?: string) => Promise<Challenge>;
   checkIn: (userId: string, challengeId: string) => Promise<void>;
   getDailyProgress: (challengeId: string) => Promise<number>;
   getUserCheckIns: (userId: string, challengeId: string) => Promise<string[]>;
@@ -25,11 +25,12 @@ export const useChallengeStore = create<ChallengeState>((set) => ({
       set({ isLoading: false });
     }
   },
-  createChallenge: async (userId, groupId, type, title, duration, startDate) => {
+  createChallenge: async (userId, groupId, type, title, duration, startDate, journeyId) => {
     set({ isLoading: true });
     try {
-      const newChallenge = await challengeService.createChallenge(userId, groupId, type, title, duration, startDate);
-      set(state => ({ challenges: [...state.challenges, newChallenge] }));
+      const newChallenge = await challengeService.createChallenge(userId, groupId, type, title, duration, startDate, journeyId);
+      set(state => ({ challenges: [newChallenge, ...state.challenges] }));
+      return newChallenge;
     } catch (error) {
       console.error('Error creating challenge:', error);
       throw error;

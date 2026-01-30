@@ -13,6 +13,9 @@ export interface Challenge {
   endDate: string;
   status: 'active' | 'completed' | 'canceled';
   createdAt: string;
+  // New fields for Journey
+  journeyId?: string;
+  unlockPolicy?: string;
 }
 
 export interface ChallengeParticipant {
@@ -28,6 +31,10 @@ export interface DailyCheckin {
   userId: string;
   dateKey: string;
   completedAt: string;
+  // New fields for Journey
+  dayIndex?: number;
+  reflectionText?: string;
+  visibility?: 'private' | 'public';
 }
 
 export const challengeService = {
@@ -37,12 +44,13 @@ export const challengeService = {
     type: ChallengeType, 
     title: string, 
     durationDays: number,
-    startDate: Date
+    startDate: Date,
+    journeyId?: string // Optional journeyId
   ): Promise<Challenge> {
     const endDate = new Date(startDate);
     endDate.setDate(endDate.getDate() + durationDays);
 
-    const challengeData = {
+    const challengeData: any = {
       group_id: groupId,
       created_by: userId,
       type,
@@ -53,6 +61,11 @@ export const challengeService = {
       status: 'active',
       created_at: new Date().toISOString(),
     };
+
+    if (journeyId) {
+      challengeData.journey_id = journeyId;
+      challengeData.unlock_policy = 'strict_daily'; // Default for MVP
+    }
 
     // 1. Create Challenge
     const { data: challenge, error: challengeError } = await supabase
@@ -141,7 +154,9 @@ export const challengeService = {
           start_date,
           end_date,
           status,
-          created_at
+          created_at,
+          journey_id,
+          unlock_policy
         )
       `)
       .eq('user_id', userId)
@@ -160,10 +175,16 @@ export const challengeService = {
       endDate: item.challenge.end_date,
       status: item.challenge.status,
       createdAt: item.challenge.created_at,
+      journeyId: item.challenge.journey_id,
+      unlockPolicy: item.challenge.unlock_policy,
     }));
   },
 
-  async checkIn(userId: string, challengeId: string) {
+  async checkIn(
+    userId: string, 
+    challengeId: string, 
+    extraData?: { dayIndex?: number; reflectionText?: string; visibility?: 'private' | 'public' }
+  ) {
     const dateKey = new Date().toISOString().split('T')[0];
 
     // Check if already checked in today
@@ -174,18 +195,49 @@ export const challengeService = {
       .eq('user_id', userId)
       .eq('date_key', dateKey)
       .single();
-
-    if (existing) return; // Already checked in
+    
+    if (existing) {
+        // If it's a journey checkin (has dayIndex), we might want to allow updating reflection
+        // But for MVP standard behavior: return if exists. 
+        // However, PRD mentions "upsert" or idempotency.
+        // Let's implement upsert logic if it's a journey check-in to allow saving reflection?
+        // Actually PRD 02 6.5 says: "Se tentativa duplicada no mesmo date_key, tratar como idempotente (OK)."
+        // It implies we don't error, but maybe we don't update either if it's strict.
+        // But for reflection, users might want to edit.
+        // Let's stick to "return if existing" for now to match current logic, 
+        // BUT if we want to support updating reflection, we should change this.
+        // Let's update reflection if provided.
+        if (extraData?.reflectionText !== undefined) {
+             await supabase
+            .from('daily_checkins')
+            .update({
+                reflection_text: extraData.reflectionText,
+                visibility: extraData.visibility || existing.visibility
+            })
+            .eq('challenge_id', challengeId)
+            .eq('user_id', userId)
+            .eq('date_key', dateKey);
+        }
+        return; 
+    }
 
     // Insert check-in
-    const { error: checkInError } = await supabase
-      .from('daily_checkins')
-      .insert({
+    const checkinPayload: any = {
         challenge_id: challengeId,
         user_id: userId,
         date_key: dateKey,
         completed_at: new Date().toISOString(),
-      });
+    };
+
+    if (extraData) {
+        if (extraData.dayIndex !== undefined) checkinPayload.day_index = extraData.dayIndex;
+        if (extraData.reflectionText !== undefined) checkinPayload.reflection_text = extraData.reflectionText;
+        if (extraData.visibility !== undefined) checkinPayload.visibility = extraData.visibility;
+    }
+
+    const { error: checkInError } = await supabase
+      .from('daily_checkins')
+      .insert(checkinPayload);
 
     if (checkInError) throw checkInError;
 
@@ -233,5 +285,40 @@ export const challengeService = {
 
     if (error) throw error;
     return data.map(d => d.date_key);
+  },
+
+  async getCheckinForDay(userId: string, challengeId: string, dayIndex: number): Promise<DailyCheckin | null> {
+    const { data, error } = await supabase
+      .from('daily_checkins')
+      .select('*')
+      .eq('challenge_id', challengeId)
+      .eq('user_id', userId)
+      .eq('day_index', dayIndex)
+      .maybeSingle();
+
+    if (error) throw error;
+    if (!data) return null;
+
+    return {
+      challengeId: data.challenge_id,
+      userId: data.user_id,
+      dateKey: data.date_key,
+      completedAt: data.completed_at,
+      dayIndex: data.day_index,
+      reflectionText: data.reflection_text,
+      visibility: data.visibility
+    };
+  },
+
+  async getCompletedDayIndices(userId: string, challengeId: string): Promise<number[]> {
+    const { data, error } = await supabase
+      .from('daily_checkins')
+      .select('day_index')
+      .eq('challenge_id', challengeId)
+      .eq('user_id', userId)
+      .not('day_index', 'is', null);
+
+    if (error) throw error;
+    return data.map((d: any) => d.day_index);
   }
 };

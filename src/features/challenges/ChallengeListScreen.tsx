@@ -26,9 +26,14 @@ export const ChallengeListScreen = () => {
     <Screen style={{ padding: spacing.lg }}>
       <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: spacing.lg }}>
         <Typography variant="h2">My Challenges</Typography>
-        <TouchableOpacity onPress={() => navigation.navigate('CreateChallenge')}>
-          <Ionicons name="add-circle" size={32} color={colors.primary} />
-        </TouchableOpacity>
+        <View style={{ flexDirection: 'row', gap: spacing.md }}>
+            <TouchableOpacity onPress={() => navigation.navigate('JourneysCatalog')}>
+                <Ionicons name="compass-outline" size={28} color={colors.primary} />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => navigation.navigate('CreateChallenge')}>
+                <Ionicons name="add-circle" size={32} color={colors.primary} />
+            </TouchableOpacity>
+        </View>
       </View>
 
       <FlatList
@@ -36,7 +41,13 @@ export const ChallengeListScreen = () => {
         keyExtractor={item => item.id}
         renderItem={({ item }) => (
           <Card 
-            onPress={() => navigation.navigate('ChallengeDetail', { challengeId: item.id })}
+            onPress={() => {
+                if (item.journeyId) {
+                    navigation.navigate('ChallengeJourney', { challenge: item });
+                } else {
+                    navigation.navigate('ChallengeDetail', { challengeId: item.id });
+                }
+            }}
             style={{ marginBottom: spacing.md }}
           >
             <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: spacing.xs }}>
