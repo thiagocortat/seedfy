@@ -66,7 +66,17 @@ export const MainTabNavigator = () => {
       })}
     >
       <Tab.Screen name="Home" component={HomeScreen} options={{ tabBarLabel: t('navigation.home') }} />
-      <Tab.Screen name="Challenges" component={ChallengesNavigator} options={{ tabBarLabel: t('navigation.challenges') }} />
+      <Tab.Screen 
+        name="Challenges" 
+        component={ChallengesNavigator} 
+        listeners={({ navigation }) => ({
+          tabPress: (e) => {
+            e.preventDefault();
+            navigation.navigate('Challenges', { screen: 'ChallengeList' });
+          },
+        })}
+        options={{ tabBarLabel: t('navigation.challenges') }} 
+      />
       <Tab.Screen name="Content" component={ContentScreen} options={{ tabBarLabel: t('navigation.library') }} />
       <Tab.Screen name="Church" component={ChurchNavigator} options={{ tabBarLabel: t('navigation.church') }} />
       <Tab.Screen name="Profile" component={ProfileNavigator} options={{ tabBarLabel: t('navigation.profile') }} />

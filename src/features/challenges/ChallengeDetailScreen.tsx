@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { View, ScrollView, Alert } from 'react-native';
+import React, { useEffect, useState, useLayoutEffect } from 'react';
+import { View, ScrollView, Alert, TouchableOpacity } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { Screen } from '../../components/Screen';
 import { Typography } from '../../components/Typography';
@@ -21,10 +21,21 @@ export const ChallengeDetailScreen = () => {
   const [loading, setLoading] = useState(false);
 
   const { spacing, colors, layout } = useTheme();
+  const navigation = useNavigation();
   const route = useRoute<any>();
   const user = useAuthStore(state => state.user);
   const { challengeId } = route.params;
   const { t } = useTranslation();
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerLeft: () => (
+        <TouchableOpacity onPress={() => navigation.goBack()} style={{ marginRight: 16 }}>
+          <Ionicons name="arrow-back" size={24} color={colors.text} />
+        </TouchableOpacity>
+      ),
+    });
+  }, [navigation, colors.text]);
 
   const challenge = challenges.find(c => c.id === challengeId);
 
