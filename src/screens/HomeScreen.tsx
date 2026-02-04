@@ -83,7 +83,7 @@ export const HomeScreen = () => {
                 <Card 
                   onPress={() => {
                     if (item.journeyId) {
-                      navigation.navigate('Challenges', { screen: 'ChallengeJourney', params: { challenge: item } });
+                      navigation.navigate('Challenges', { screen: 'ChallengeJourney', params: { challenge: item, from: 'Home' } });
                     } else {
                       navigation.navigate('Challenges', { screen: 'ChallengeDetail', params: { challengeId: item.id } });
                     }

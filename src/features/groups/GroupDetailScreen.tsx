@@ -125,15 +125,13 @@ export const GroupDetailScreen = () => {
           title={t('common.deny', 'Deny')}
           onPress={() => handleResolveRequest(item.id, 'denied')}
           variant="outline"
-          size="small"
-          style={{ flex: 1, borderColor: colors.error }}
+          style={{ flex: 1, borderColor: colors.error, minHeight: 36, paddingVertical: 4 }}
           textColor={colors.error}
         />
         <Button
           title={t('common.approve', 'Approve')}
           onPress={() => handleResolveRequest(item.id, 'approved')}
-          size="small"
-          style={{ flex: 1 }}
+          style={{ flex: 1, minHeight: 36, paddingVertical: 4 }}
         />
       </View>
     </Card>
@@ -191,8 +189,10 @@ export const GroupDetailScreen = () => {
   return (
     <Screen style={{ padding: spacing.lg }}>
       <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: spacing.md }}>
-        <Typography variant="h1">{group.name}</Typography>
-        <View style={{ flexDirection: 'row' }}>
+        <View style={{ flex: 1, marginRight: spacing.md }}>
+          <Typography variant="h1">{group.name}</Typography>
+        </View>
+        <View style={{ flexDirection: 'row', flexShrink: 0 }}>
           {isOwner && (
             <Button 
               title={t('common.edit')} 

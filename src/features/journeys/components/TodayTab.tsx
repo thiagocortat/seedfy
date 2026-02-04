@@ -35,6 +35,7 @@ export const TodayTab: React.FC<Props> = ({ journeyId, challengeId, dayIndex, on
     if (!user) return;
     try {
       setLoading(true);
+      console.log(`Loading content for journey ${journeyId}, day ${dayIndex}`);
       
       // Load chapter content
       const chapterData = await journeyService.getChapter(journeyId, dayIndex);
@@ -42,9 +43,14 @@ export const TodayTab: React.FC<Props> = ({ journeyId, challengeId, dayIndex, on
       
       // Check if already completed today
       const checkin = await challengeService.getCheckinForDay(user.id, challengeId, dayIndex);
+      console.log('Checkin result:', checkin);
+      
       if (checkin) {
         setIsCompletedToday(true);
         setReflection(checkin.reflectionText || '');
+      } else {
+        setIsCompletedToday(false);
+        setReflection('');
       }
     } catch (error) {
       console.error('Error loading today content:', error);

@@ -13,14 +13,24 @@ import { Challenge } from '../../services/challengeService';
 
 export const ChallengeJourneyScreen = () => {
   const route = useRoute<any>();
-  const navigation = useNavigation();
-  const { challenge } = route.params as { challenge: Challenge };
+  const navigation = useNavigation<any>();
+  const { challenge, from } = route.params as { challenge: Challenge; from?: string };
   const [activeTab, setActiveTab] = useState<'today' | 'trail'>('today');
   
   const { spacing, colors } = useTheme();
   const { t } = useTranslation();
   
   const progress = useJourneyProgress(challenge.startDate, challenge.durationDays);
+
+  const handleBack = () => {
+    if (from === 'ChallengeList') {
+      navigation.navigate('ChallengeList');
+    } else if (from === 'Home') {
+      navigation.navigate('Home');
+    } else {
+      navigation.goBack();
+    }
+  };
 
   return (
     <Screen style={{ padding: 0 }}>
@@ -33,7 +43,7 @@ export const ChallengeJourneyScreen = () => {
           borderBottomWidth: 1, 
           borderBottomColor: colors.border 
         }}>
-          <TouchableOpacity onPress={() => navigation.goBack()} style={{ marginRight: spacing.md }}>
+          <TouchableOpacity onPress={handleBack} style={{ marginRight: spacing.md }}>
             <Ionicons name="arrow-back" size={24} color={colors.text} />
           </TouchableOpacity>
           <View>

@@ -43,7 +43,7 @@ export const ChallengeListScreen = () => {
           <Card 
             onPress={() => {
                 if (item.journeyId) {
-                    navigation.navigate('ChallengeJourney', { challenge: item });
+                    navigation.navigate('ChallengeJourney', { challenge: item, from: 'ChallengeList' });
                 } else {
                     navigation.navigate('ChallengeDetail', { challengeId: item.id });
                 }

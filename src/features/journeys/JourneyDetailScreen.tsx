@@ -81,7 +81,7 @@ export const JourneyDetailScreen = () => {
         
         navigation.navigate('Challenges', { 
             screen: 'ChallengeJourney', 
-            params: { challenge: newChallenge } 
+            params: { challenge: newChallenge, from: 'JourneyDetail' } 
         });
     } catch (error) {
         console.error(error);

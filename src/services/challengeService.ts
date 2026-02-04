@@ -229,6 +229,8 @@ export const challengeService = {
         completed_at: new Date().toISOString(),
     };
 
+    console.log('CheckIn payload:', checkinPayload, 'Extra:', extraData);
+
     if (extraData) {
         if (extraData.dayIndex !== undefined) checkinPayload.day_index = extraData.dayIndex;
         if (extraData.reflectionText !== undefined) checkinPayload.reflection_text = extraData.reflectionText;
@@ -288,6 +290,7 @@ export const challengeService = {
   },
 
   async getCheckinForDay(userId: string, challengeId: string, dayIndex: number): Promise<DailyCheckin | null> {
+    console.log(`Getting checkin for day ${dayIndex}, user ${userId}, challenge ${challengeId}`);
     const { data, error } = await supabase
       .from('daily_checkins')
       .select('*')
@@ -296,8 +299,17 @@ export const challengeService = {
       .eq('day_index', dayIndex)
       .maybeSingle();
 
-    if (error) throw error;
-    if (!data) return null;
+    if (error) {
+      console.error('Error fetching checkin:', error);
+      throw error;
+    }
+
+    if (!data) {
+      console.log('No checkin found for day', dayIndex);
+      return null;
+    }
+
+    console.log('Checkin found:', data);
 
     return {
       challengeId: data.challenge_id,
