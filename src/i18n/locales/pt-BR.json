@@ -129,7 +129,18 @@
     "myGroups": "Meus Grupos",
     "signOut": "Sair",
     "language": "Idioma",
-    "changeLanguage": "Alterar Idioma"
+    "changeLanguage": "Alterar Idioma",
+    "consistency": "Consistência",
+    "activeDays": "Dias Ativos",
+    "currentStreak": "Sequência Atual",
+    "bestStreak": "Melhor Sequência",
+    "trophies": "Conquistas",
+    "completedChallenges": "Desafios Concluídos",
+    "startChallenge": "Começar um desafio",
+    "noTrophies": "Complete um desafio para ganhar seu primeiro troféu.",
+    "trophyDetail": "Detalhe do Troféu",
+    "period": "Período",
+    "progress": "Progresso"
   },
   "challenges": {
     "selectType": "Selecione o Tipo de Desafio",

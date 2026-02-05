@@ -11,6 +11,9 @@ import { ExploreGroupsScreen } from '../features/groups/ExploreGroupsScreen';
 import { EditGroupScreen } from '../features/groups/EditGroupScreen';
 import { useTranslation } from 'react-i18next';
 
+import { TrophiesScreen } from '../screens/TrophiesScreen';
+import { TrophyDetailScreen } from '../screens/TrophyDetailScreen';
+
 const Stack = createNativeStackNavigator();
 
 export const ProfileNavigator = () => {
@@ -18,6 +21,8 @@ export const ProfileNavigator = () => {
   return (
     <Stack.Navigator>
       <Stack.Screen name="ProfileMain" component={ProfileScreen} options={{ headerShown: false }} />
+      <Stack.Screen name="Trophies" component={TrophiesScreen} options={{ headerShown: false }} />
+      <Stack.Screen name="TrophyDetail" component={TrophyDetailScreen} options={{ headerShown: false, presentation: 'modal' }} />
       <Stack.Screen name="GroupList" component={GroupListScreen} options={{ title: t('profile.myGroups') || 'My Groups' }} />
       <Stack.Screen name="CreateGroup" component={CreateGroupScreen} options={{ title: t('groups.create') || 'Create Group' }} />
       <Stack.Screen name="EditGroup" component={EditGroupScreen} options={{ title: t('groups.edit') || 'Edit Group' }} />
