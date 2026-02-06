@@ -14,7 +14,7 @@ import { Share } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 export const ChallengeDetailScreen = () => {
-  const { challenges, checkIn, getDailyProgress, getUserCheckIns } = useChallengeStore();
+  const { challenges, checkIn, getDailyProgress, getUserCheckIns, quitChallenge, rejoinChallenge } = useChallengeStore();
   const [todayCount, setTodayCount] = useState(0);
   const [isCheckedIn, setIsCheckedIn] = useState(false);
   const [userCheckIns, setUserCheckIns] = useState<string[]>([]);
@@ -27,6 +27,42 @@ export const ChallengeDetailScreen = () => {
   const { challengeId } = route.params;
   const { t } = useTranslation();
 
+  const challenge = challenges.find(c => c.id === challengeId);
+
+  const handleQuit = async () => {
+    if (!user || !challenge) return;
+    Alert.alert(
+      t('challenges.quitTitle'),
+      t('challenges.quitMessage'),
+      [
+        { text: t('common.cancel'), style: "cancel" },
+        { 
+          text: t('challenges.quitConfirm'), 
+          style: "destructive", 
+          onPress: async () => {
+            try {
+                await quitChallenge(user.id, challenge.id);
+                navigation.goBack();
+                Alert.alert(t('challenges.quitSuccess'));
+            } catch (error) {
+                Alert.alert(t('common.error'), t('challenges.quitError'));
+            }
+          }
+        }
+      ]
+    );
+  };
+
+  const handleRejoin = async () => {
+    if (!user || !challenge) return;
+    try {
+        await rejoinChallenge(user.id, challenge.id);
+        Alert.alert(t('common.success'), t('challenges.rejoinSuccess'));
+    } catch (error) {
+        Alert.alert(t('common.error'), t('challenges.rejoinError'));
+    }
+  };
+
   useLayoutEffect(() => {
     navigation.setOptions({
       headerLeft: () => (
@@ -34,10 +70,15 @@ export const ChallengeDetailScreen = () => {
           <Ionicons name="arrow-back" size={24} color={colors.text} />
         </TouchableOpacity>
       ),
+      headerRight: () => (
+        challenge?.participantStatus === 'active' ? (
+            <TouchableOpacity onPress={handleQuit} style={{ marginRight: 16 }}>
+              <Ionicons name="ellipsis-vertical" size={24} color={colors.text} />
+            </TouchableOpacity>
+        ) : null
+      )
     });
-  }, [navigation, colors.text]);
-
-  const challenge = challenges.find(c => c.id === challengeId);
+  }, [navigation, colors.text, challenge?.participantStatus]);
 
   useEffect(() => {
     const loadProgress = async () => {
@@ -84,6 +125,36 @@ export const ChallengeDetailScreen = () => {
   };
 
   if (!challenge) return null;
+
+  if (challenge.participantStatus === 'quit') {
+    return (
+        <Screen style={{ padding: spacing.lg }}>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: spacing.lg }}>
+                <View style={{ flex: 1 }}>
+                <Typography variant="h1">{challenge.title}</Typography>
+                <Typography variant="body" color={colors.textSecondary} style={{ textTransform: 'capitalize' }}>
+                    {t(`challenges.types.${challenge.type}`, { defaultValue: challenge.type })} • {challenge.durationDays} {t('common.days')}
+                </Typography>
+                </View>
+            </View>
+
+            <Card style={{ padding: spacing.lg, alignItems: 'center', marginBottom: spacing.xl, backgroundColor: colors.surface }}>
+                <Ionicons name="exit-outline" size={48} color={colors.textSecondary} style={{ marginBottom: spacing.md }} />
+                <Typography variant="h3" align="center" style={{ marginBottom: spacing.sm }}>
+                    {t('challenges.quitStateTitle')}
+                </Typography>
+                <Typography variant="body" align="center" color={colors.textSecondary} style={{ marginBottom: spacing.lg }}>
+                    {t('challenges.quitStateMessage')}
+                </Typography>
+                <Button 
+                    title={t('challenges.rejoinAction')} 
+                    onPress={handleRejoin}
+                    style={{ width: '100%' }}
+                />
+            </Card>
+        </Screen>
+    );
+  }
 
   return (
     <Screen style={{ padding: spacing.lg }}>

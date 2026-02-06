@@ -9,12 +9,14 @@ import { useTheme } from '../../theme';
 import { useChallengeStore } from '../../store/useChallengeStore';
 import { useAuthStore } from '../../store/useAuthStore';
 import { Ionicons } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
 
 export const ChallengeListScreen = () => {
   const { challenges, isLoading, fetchUserChallenges } = useChallengeStore();
   const user = useAuthStore(state => state.user);
   const { spacing, colors } = useTheme();
   const navigation = useNavigation<any>();
+  const { t } = useTranslation();
 
   useEffect(() => {
     if (user) {
@@ -22,10 +24,12 @@ export const ChallengeListScreen = () => {
     }
   }, [user]);
 
+  const activeChallenges = challenges.filter(c => c.participantStatus !== 'quit');
+
   return (
     <Screen style={{ padding: spacing.lg }}>
       <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: spacing.lg }}>
-        <Typography variant="h2">My Challenges</Typography>
+        <Typography variant="h2">{t('challenges.myChallenges')}</Typography>
         <View style={{ flexDirection: 'row', gap: spacing.md }}>
             <TouchableOpacity onPress={() => navigation.navigate('JourneysCatalog')}>
                 <Ionicons name="compass-outline" size={28} color={colors.primary} />
@@ -37,7 +41,7 @@ export const ChallengeListScreen = () => {
       </View>
 
       <FlatList
-        data={challenges}
+        data={activeChallenges}
         keyExtractor={item => item.id}
         renderItem={({ item }) => (
           <Card 
@@ -55,17 +59,17 @@ export const ChallengeListScreen = () => {
                <Typography variant="h3">{item.title}</Typography>
             </View>
             <Typography variant="caption" color={colors.textSecondary}>
-              Ends {new Date(item.endDate).toLocaleDateString()} • {item.durationDays} Days
+              {t('challenges.ends')} {new Date(item.endDate).toLocaleDateString()} • {item.durationDays} {t('common.days')}
             </Typography>
           </Card>
         )}
         ListEmptyComponent={
           <View style={{ alignItems: 'center', marginTop: spacing.xl }}>
             <Typography variant="body" color={colors.textSecondary}>
-              No active challenges.
+              {t('challenges.noActiveChallenges')}
             </Typography>
             <Button 
-              title="Start a Challenge" 
+              title={t('profile.startChallenge')} 
               onPress={() => navigation.navigate('CreateChallenge')}
               variant="ghost"
               style={{ marginTop: spacing.md }}

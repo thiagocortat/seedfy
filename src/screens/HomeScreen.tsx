@@ -31,6 +31,8 @@ export const HomeScreen = () => {
     }
   }, [user]);
 
+  const activeChallenges = challenges.filter(c => c.participantStatus !== 'quit');
+
   const greeting = () => {
     const hour = new Date().getHours();
     if (hour < 12) return t('home.goodMorning');
@@ -73,10 +75,10 @@ export const HomeScreen = () => {
             </View>
           </View>
 
-          {challenges.length > 0 ? (
+          {activeChallenges.length > 0 ? (
             <FlatList
               horizontal
-              data={challenges}
+              data={activeChallenges}
               showsHorizontalScrollIndicator={false}
               keyExtractor={item => item.id}
               renderItem={({ item }) => (

@@ -7,6 +7,8 @@ interface ChallengeState {
   fetchUserChallenges: (userId: string) => Promise<void>;
   createChallenge: (userId: string, groupId: string, type: any, title: string, duration: number, startDate: Date, journeyId?: string) => Promise<Challenge>;
   checkIn: (userId: string, challengeId: string) => Promise<void>;
+  quitChallenge: (userId: string, challengeId: string) => Promise<void>;
+  rejoinChallenge: (userId: string, challengeId: string) => Promise<void>;
   getDailyProgress: (challengeId: string) => Promise<number>;
   getUserCheckIns: (userId: string, challengeId: string) => Promise<string[]>;
 }
@@ -44,6 +46,38 @@ export const useChallengeStore = create<ChallengeState>((set) => ({
     } catch (error) {
       console.error('Error checking in:', error);
       throw error;
+    }
+  },
+  quitChallenge: async (userId, challengeId) => {
+    set({ isLoading: true });
+    try {
+      await challengeService.quitChallenge(userId, challengeId);
+      set(state => ({
+        challenges: state.challenges.map(c => 
+          c.id === challengeId ? { ...c, participantStatus: 'quit' } : c
+        )
+      }));
+    } catch (error) {
+      console.error('Error quitting challenge:', error);
+      throw error;
+    } finally {
+      set({ isLoading: false });
+    }
+  },
+  rejoinChallenge: async (userId, challengeId) => {
+    set({ isLoading: true });
+    try {
+      await challengeService.rejoinChallenge(userId, challengeId);
+      set(state => ({
+        challenges: state.challenges.map(c => 
+          c.id === challengeId ? { ...c, participantStatus: 'active' } : c
+        )
+      }));
+    } catch (error) {
+      console.error('Error rejoining challenge:', error);
+      throw error;
+    } finally {
+      set({ isLoading: false });
     }
   },
   getDailyProgress: async (challengeId) => {

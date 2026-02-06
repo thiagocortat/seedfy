@@ -16,6 +16,8 @@ export interface Challenge {
   // New fields for Journey
   journeyId?: string;
   unlockPolicy?: string;
+  // Participant status for user challenges
+  participantStatus?: 'active' | 'quit' | 'completed';
 }
 
 export interface ChallengeParticipant {
@@ -144,6 +146,7 @@ export const challengeService = {
     const { data, error } = await supabase
       .from('challenge_participants')
       .select(`
+        status,
         challenge:challenges (
           id,
           group_id,
@@ -177,6 +180,7 @@ export const challengeService = {
       createdAt: item.challenge.created_at,
       journeyId: item.challenge.journey_id,
       unlockPolicy: item.challenge.unlock_policy,
+      participantStatus: item.status,
     }));
   },
 
@@ -185,6 +189,28 @@ export const challengeService = {
     challengeId: string, 
     extraData?: { dayIndex?: number; reflectionText?: string; visibility?: 'private' | 'public' }
   ) {
+    // Verify participant status first
+    const { data: participant, error: pError } = await supabase
+      .from('challenge_participants')
+      .select('status, progress')
+      .eq('challenge_id', challengeId)
+      .eq('user_id', userId)
+      .single();
+
+    if (pError || !participant) {
+        throw new Error("Participant not found");
+    }
+
+    if (participant.status === 'quit') {
+        throw new Error("You have quit this challenge.");
+    }
+
+    if (participant.status !== 'active') {
+         // Could be completed? If completed, maybe checkins are still allowed?
+         // PRD says: "Bloquear check-in se status != active" (Section 7.4)
+         throw new Error("You must be an active participant to check in.");
+    }
+
     const dateKey = new Date().toISOString().split('T')[0];
 
     // Check if already checked in today
@@ -248,21 +274,33 @@ export const challengeService = {
     // For simplicity: get current progress and increment.
     // Better: RPC "increment_progress"
     
-    // For now, let's just increment in client logic or simple update
-    const { data: participant } = await supabase
-      .from('challenge_participants')
-      .select('progress')
-      .eq('challenge_id', challengeId)
-      .eq('user_id', userId)
-      .single();
-
-    if (participant) {
+    if (participant) { // participant is already fetched above
       await supabase
         .from('challenge_participants')
         .update({ progress: (participant.progress || 0) + 1 })
         .eq('challenge_id', challengeId)
         .eq('user_id', userId);
     }
+  },
+
+  async quitChallenge(userId: string, challengeId: string) {
+    const { error } = await supabase
+      .from('challenge_participants')
+      .update({ status: 'quit' })
+      .eq('challenge_id', challengeId)
+      .eq('user_id', userId);
+
+    if (error) throw error;
+  },
+
+  async rejoinChallenge(userId: string, challengeId: string) {
+    const { error } = await supabase
+      .from('challenge_participants')
+      .update({ status: 'active' })
+      .eq('challenge_id', challengeId)
+      .eq('user_id', userId);
+
+    if (error) throw error;
   },
 
   async getDailyProgress(challengeId: string): Promise<number> {
