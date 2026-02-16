@@ -31,7 +31,7 @@ export const HomeScreen = () => {
     }
   }, [user]);
 
-  const activeChallenges = challenges.filter(c => c.participantStatus !== 'quit');
+  const activeChallenges = challenges.filter(c => c.participantStatus !== 'quit' && new Date(c.endDate) > new Date());
 
   const greeting = () => {
     const hour = new Date().getHours();

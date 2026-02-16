@@ -10,7 +10,9 @@
     "days": "Días",
     "viewAll": "Ver Todo",
     "continue": "Continuar",
-    "start": "Comenzar"
+    "start": "Comenzar",
+    "active": "Activos",
+    "completed": "Completados"
   },
   "auth": {
     "welcomeBack": "Bienvenido de nuevo",
@@ -53,7 +55,8 @@
     "myGroups": "Mis Grupos",
     "signOut": "Cerrar Sesión",
     "language": "Idioma",
-    "changeLanguage": "Cambiar Idioma"
+    "changeLanguage": "Cambiar Idioma",
+    "startChallenge": "Iniciar un Desafío"
   },
   "challenges": {
     "selectType": "Seleccionar Tipo de Desafío",
@@ -67,6 +70,10 @@
     "createGroup": "Crear un Grupo",
     "selectionRequired": "Selección Requerida",
     "selectGroupError": "Por favor selecciona un grupo para crear un desafío.",
+    "myChallenges": "Mis Desafíos",
+    "ends": "Termina",
+    "noActiveChallenges": "No hay desafíos activos.",
+    "noCompletedChallenges": "No hay desafíos completados.",
     "invite": "Invitar",
     "inviteMessage": "Únete a mi desafío \"{{title}}\" en Seedfy: {{link}}",
     "participantsToday": "Participantes completaron hoy",

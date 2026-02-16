@@ -18,7 +18,9 @@
     "deny": "Deny",
     "approve": "Approve",
     "edit": "Edit",
-    "unknownUser": "Unknown User"
+    "unknownUser": "Unknown User",
+    "active": "Active",
+    "completed": "Completed"
   },
   "auth": {
     "welcomeBack": "Welcome Back",
@@ -124,7 +126,8 @@
     "myGroups": "My Groups",
     "signOut": "Sign Out",
     "language": "Language",
-    "changeLanguage": "Change Language"
+    "changeLanguage": "Change Language",
+    "startChallenge": "Start a Challenge"
   },
   "challenges": {
     "selectType": "Select Challenge Type",
@@ -141,6 +144,7 @@
     "myChallenges": "My Challenges",
     "ends": "Ends",
     "noActiveChallenges": "No active challenges.",
+    "noCompletedChallenges": "No completed challenges.",
     "challenge": "Challenge",
     "invite": "Invite",
     "inviteMessage": "Join my challenge \"{{title}}\" on Seedfy: {{link}}",

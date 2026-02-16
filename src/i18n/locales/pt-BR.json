@@ -22,7 +22,9 @@
     "accept": "Aceitar",
     "deny": "Negar",
     "approve": "Aprovar",
-    "edit": "Editar"
+    "edit": "Editar",
+    "active": "Ativos",
+    "completed": "Concluídos"
   },
   "auth": {
     "welcomeBack": "Bem-vindo de volta",
@@ -157,6 +159,7 @@
     "myChallenges": "Meus Desafios",
     "ends": "Termina em",
     "noActiveChallenges": "Nenhum desafio ativo.",
+    "noCompletedChallenges": "Nenhum desafio concluído.",
     "challenge": "Desafio",
     "invite": "Convidar",
     "inviteMessage": "Participe do meu desafio \"{{title}}\" no Seedfy: {{link}}",

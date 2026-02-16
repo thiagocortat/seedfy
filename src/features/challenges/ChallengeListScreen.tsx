@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, FlatList, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Screen } from '../../components/Screen';
@@ -14,9 +14,10 @@ import { useTranslation } from 'react-i18next';
 export const ChallengeListScreen = () => {
   const { challenges, isLoading, fetchUserChallenges } = useChallengeStore();
   const user = useAuthStore(state => state.user);
-  const { spacing, colors } = useTheme();
+  const { spacing, colors, layout } = useTheme();
   const navigation = useNavigation<any>();
   const { t } = useTranslation();
+  const [activeTab, setActiveTab] = useState<'active' | 'completed'>('active');
 
   useEffect(() => {
     if (user) {
@@ -24,7 +25,42 @@ export const ChallengeListScreen = () => {
     }
   }, [user]);
 
-  const activeChallenges = challenges.filter(c => c.participantStatus !== 'quit');
+  const now = new Date();
+
+  const activeList = challenges.filter(c => 
+    c.participantStatus === 'active' && new Date(c.endDate) > now
+  );
+
+  const completedList = challenges.filter(c => 
+    c.participantStatus === 'quit' || 
+    c.participantStatus === 'completed' || 
+    (c.participantStatus === 'active' && new Date(c.endDate) <= now)
+  );
+
+  const currentList = activeTab === 'active' ? activeList : completedList;
+
+  const renderTab = (key: 'active' | 'completed', label: string) => (
+    <TouchableOpacity
+      onPress={() => setActiveTab(key)}
+      style={{
+        flex: 1,
+        paddingVertical: spacing.sm,
+        backgroundColor: activeTab === key ? colors.primary : colors.surface,
+        borderRadius: layout.radius.md,
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderWidth: 1,
+        borderColor: activeTab === key ? colors.primary : colors.border,
+      }}
+    >
+      <Typography 
+        variant="label" 
+        color={activeTab === key ? colors.surface : colors.text}
+      >
+        {label}
+      </Typography>
+    </TouchableOpacity>
+  );
 
   return (
     <Screen style={{ padding: spacing.lg }}>
@@ -40,8 +76,13 @@ export const ChallengeListScreen = () => {
         </View>
       </View>
 
+      <View style={{ flexDirection: 'row', gap: spacing.md, marginBottom: spacing.lg }}>
+        {renderTab('active', t('common.active', { defaultValue: 'Active' }))}
+        {renderTab('completed', t('common.completed', { defaultValue: 'Completed' }))}
+      </View>
+
       <FlatList
-        data={activeChallenges}
+        data={currentList}
         keyExtractor={item => item.id}
         renderItem={({ item }) => (
           <Card 
@@ -66,14 +107,19 @@ export const ChallengeListScreen = () => {
         ListEmptyComponent={
           <View style={{ alignItems: 'center', marginTop: spacing.xl }}>
             <Typography variant="body" color={colors.textSecondary}>
-              {t('challenges.noActiveChallenges')}
+              {activeTab === 'active' 
+                ? t('challenges.noActiveChallenges', { defaultValue: 'No active challenges' })
+                : t('challenges.noCompletedChallenges', { defaultValue: 'No completed challenges' })
+              }
             </Typography>
-            <Button 
-              title={t('profile.startChallenge')} 
-              onPress={() => navigation.navigate('CreateChallenge')}
-              variant="ghost"
-              style={{ marginTop: spacing.md }}
-            />
+            {activeTab === 'active' && (
+              <Button 
+                title={t('profile.startChallenge')} 
+                onPress={() => navigation.navigate('CreateChallenge')}
+                variant="ghost"
+                style={{ marginTop: spacing.md }}
+              />
+            )}
           </View>
         }
       />
